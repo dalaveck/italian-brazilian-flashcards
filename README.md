@@ -20,6 +20,9 @@ sessão.
   navegador.
 - Escolha do **número de perguntas** (10, 15, 20, 30 ou todas) e embaralhamento.
 - Tela de **resultados** com precisão, acertos/erros, melhor sequência e tempo.
+- **Crie seus próprios cartões** (módulo, italiano, português, sinônimos e
+  dica). Ficam **salvos no navegador** e continuam lá quando você volta; entram
+  normalmente nas sessões junto com os cartões internos.
 
 ## 🚀 Rodar localmente
 

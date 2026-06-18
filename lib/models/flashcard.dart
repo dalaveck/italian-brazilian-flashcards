@@ -7,6 +7,7 @@ class Flashcard {
     this.itAlt = const [],
     this.ptAlt = const [],
     this.hint,
+    this.id,
   });
 
   /// Id do módulo a que o cartão pertence (ex.: `verbos_presente`).
@@ -26,6 +27,37 @@ class Flashcard {
 
   /// Dica opcional mostrada sob demanda.
   final String? hint;
+
+  /// Identificador único. Presente apenas em cartões criados pelo usuário;
+  /// `null` para os cartões internos do app.
+  final String? id;
+
+  /// `true` quando o cartão foi criado pelo usuário (tem [id]).
+  bool get isCustom => id != null;
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'moduleId': moduleId,
+        'it': it,
+        'pt': pt,
+        'itAlt': itAlt,
+        'ptAlt': ptAlt,
+        'hint': hint,
+      };
+
+  factory Flashcard.fromJson(Map<String, dynamic> json) {
+    List<String> asList(dynamic v) =>
+        (v as List?)?.map((e) => e.toString()).toList() ?? const [];
+    return Flashcard(
+      id: json['id'] as String?,
+      moduleId: json['moduleId'] as String? ?? 'personalizados',
+      it: json['it'] as String? ?? '',
+      pt: json['pt'] as String? ?? '',
+      itAlt: asList(json['itAlt']),
+      ptAlt: asList(json['ptAlt']),
+      hint: json['hint'] as String?,
+    );
+  }
 }
 
 /// Sentido da pergunta no jogo.

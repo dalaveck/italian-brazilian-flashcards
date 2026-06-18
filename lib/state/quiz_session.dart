@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
-import '../data/decks.dart';
 import '../models/flashcard.dart';
 import '../services/answer_checker.dart';
+import 'card_repository.dart';
 import 'quiz_config.dart';
 
 /// Resultado da avaliação da última resposta enviada.
@@ -62,7 +62,7 @@ class QuizSession extends ChangeNotifier {
   static const int kBasePoints = 100;
 
   void _build() {
-    final cards = cardsForModules(config.moduleIds);
+    final cards = CardRepository.instance.cardsForModules(config.moduleIds);
     final rng = Random();
     final pool = List<Flashcard>.from(cards);
     if (config.shuffle) {

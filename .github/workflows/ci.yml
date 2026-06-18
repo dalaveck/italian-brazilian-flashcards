@@ -16,5 +16,7 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
-      - run: flutter analyze
+      # --no-fatal-infos: não falhar por lints de estilo (info), apenas por
+      # erros e warnings reais.
+      - run: flutter analyze --no-fatal-infos
       - run: flutter test

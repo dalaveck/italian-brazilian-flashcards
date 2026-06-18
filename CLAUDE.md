@@ -35,13 +35,16 @@ lib/
   services/
     answer_checker.dart      # normalização e comparação de respostas
     score_store.dart         # persistência de recordes (shared_preferences)
+    custom_card_store.dart   # persistência dos cartões do usuário (JSON)
   state/
     quiz_config.dart         # configuração escolhida na home
     quiz_session.dart        # lógica/estado de uma sessão (pontuação, fluxo)
+    card_repository.dart     # combina kAllCards + cartões do usuário (singleton)
   screens/
     home_screen.dart         # seleção de módulos/sentido/opções
     quiz_screen.dart         # tela de pergunta + cronômetro + digitação
     results_screen.dart      # placar final
+    custom_cards_screen.dart # criar/editar/excluir cartões do usuário
 test/                        # testes unitários (answer checker, sessão)
 web/                         # index.html, manifest, ícones
 .github/workflows/
@@ -60,10 +63,16 @@ web/                         # index.html, manifest, ícones
 - A comparação de respostas (`AnswerChecker`) é tolerante: ignora
   maiúsculas/minúsculas, acentuação, pontuação e artigo inicial. Ao mexer nisso,
   mantenha os testes em `test/answer_checker_test.dart` passando.
-- **Para adicionar vocabulário:** edite só `lib/data/decks.dart`. Cada cartão é
-  um `Flashcard(moduleId, it, pt, itAlt?, ptAlt?, hint?)`. Use `itAlt`/`ptAlt`
-  para sinônimos/variantes aceitas. Para um módulo novo, adicione a entrada em
-  `lib/data/modules.dart` (id + label + ícone) e cartões com esse `moduleId`.
+- **Para adicionar vocabulário interno:** edite só `lib/data/decks.dart`. Cada
+  cartão é um `Flashcard(moduleId, it, pt, itAlt?, ptAlt?, hint?)`. Use
+  `itAlt`/`ptAlt` para sinônimos/variantes aceitas. Para um módulo novo,
+  adicione a entrada em `lib/data/modules.dart` (id + label + ícone) e cartões
+  com esse `moduleId`.
+- **Cartões do usuário:** criados em `custom_cards_screen.dart`, persistidos por
+  `custom_card_store.dart` e expostos via `CardRepository.instance` (carregado no
+  `main()` antes do `runApp`). `QuizSession` monta as perguntas a partir de
+  `CardRepository.instance.cardsForModules(...)`, que une internos + do usuário.
+  Cartões do usuário têm `Flashcard.id` (os internos têm `id == null`).
 
 ## Comandos
 
