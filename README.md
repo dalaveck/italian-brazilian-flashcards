@@ -5,7 +5,7 @@ brasileiro**, feito em **Flutter Web**. Você escolhe os módulos, o sentido da
 tradução, **digita a resposta**, ganha **pontos** e pode **cronometrar** a
 sessão.
 
-> Produção (após habilitar o Pages): **https://dalaveck.github.io/italian-brazilian-flashcards/**
+> Hospedado na **Vercel** (veja a seção de deploy abaixo).
 
 ## ✨ Recursos
 
@@ -41,21 +41,6 @@ flutter test
 flutter analyze
 ```
 
-## 🌐 Publicar na internet (GitHub Pages)
-
-O deploy é **automático via GitHub Actions**. Passo único de configuração:
-
-1. No GitHub, vá em **Settings → Pages**.
-2. Em **Source**, selecione **"GitHub Actions"**.
-3. Faça merge/push na branch **`main`**. O workflow
-   [`deploy.yml`](.github/workflows/deploy.yml) compila o app e publica.
-
-O site ficará em `https://<usuario>.github.io/<repositorio>/`. Se renomear o
-repositório, ajuste o `--base-href` em `deploy.yml`.
-
-> Alternativas de hospedagem (mesmo build `build/web`): Netlify,
-> Cloudflare Pages, Firebase Hosting — basta servir a pasta `build/web`.
-
 ## ▲ Publicar na Vercel
 
 O projeto já vem pronto para a Vercel (veja [`vercel.json`](vercel.json) e
@@ -78,11 +63,12 @@ vercel        # pré-visualização
 vercel --prod # produção
 ```
 
-> Diferença para o GitHub Pages: na Vercel o app roda na **raiz** do domínio,
-> então o `--base-href` é `/` (padrão). No GitHub Pages ele precisa ser
-> `/italian-brazilian-flashcards/`. Por isso cada um tem seu próprio fluxo.
-> Para fixar a versão do Flutter no build da Vercel, defina a variável de
-> ambiente `FLUTTER_VERSION` (padrão: `3.44.2`).
+> O app roda na **raiz** do domínio na Vercel, então o `--base-href` é `/`
+> (padrão). Para fixar a versão do Flutter no build, defina a variável de
+> ambiente `FLUTTER_VERSION` no painel da Vercel (padrão: `3.44.2`).
+>
+> O mesmo `build/web` também serve em Netlify, Cloudflare Pages ou Firebase
+> Hosting, caso queira trocar de provedor.
 
 ## 🧩 Como adicionar palavras
 

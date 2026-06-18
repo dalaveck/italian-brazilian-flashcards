@@ -6,12 +6,11 @@ repositório. Leia antes de fazer alterações.
 ## Visão geral
 
 App de **flashcards Italiano ⇄ Português brasileiro**, feito em **Flutter
-(Web)** e publicado no **GitHub Pages**. O usuário escolhe módulos (verbos no
+(Web)** e publicado na **Vercel**. O usuário escolhe módulos (verbos no
 presente, preposições, artigos, etc.), o sentido da tradução, digita a resposta
 e recebe pontuação; há cronômetro opcional.
 
-URL de produção (após habilitar o Pages):
-`https://dalaveck.github.io/italian-brazilian-flashcards/`
+URL de produção: `https://<seu-projeto>.vercel.app`
 
 ## Stack
 
@@ -48,7 +47,6 @@ lib/
 test/                        # testes unitários (answer checker, sessão)
 web/                         # index.html, manifest, ícones
 .github/workflows/
-  deploy.yml                 # build web + deploy no Pages (push na main)
   ci.yml                     # analyze + test (branches/PRs)
 vercel.json                  # config de deploy na Vercel
 vercel-build.sh              # baixa o Flutter SDK e roda `flutter build web`
@@ -83,27 +81,22 @@ flutter pub get
 flutter run -d chrome          # desenvolvimento local (web)
 flutter test                   # testes
 flutter analyze                # lint/análise estática
-flutter build web --release --base-href "/italian-brazilian-flashcards/"
+flutter build web --release    # base-href padrão "/" (raiz do domínio)
 ```
 
-## Publicação
+## Publicação (Vercel)
 
-O deploy é automático: ao dar **push na branch `main`**, o workflow
-`deploy.yml` compila o web e publica no GitHub Pages. Pré-requisito único
-(feito uma vez no GitHub): **Settings → Pages → Source = "GitHub Actions"**.
+Deploy via **Vercel**. `vercel.json` define `buildCommand: bash vercel-build.sh`
+e `outputDirectory: build/web`. O script baixa o Flutter (versão em
+`FLUTTER_VERSION`, padrão `3.44.2`) e roda `flutter build web --release`. Como o
+app é servido na **raiz** do domínio na Vercel, o `--base-href` fica `/`
+(padrão). O `rewrites` catch-all serve `index.html` para rotas desconhecidas (a
+Vercel checa o filesystem antes, então os assets continuam sendo servidos
+diretamente).
 
-Se o repositório for renomeado, atualize o `--base-href` em `deploy.yml` para
-`/<novo-nome>/`.
-
-### Vercel
-
-`vercel.json` define `buildCommand: bash vercel-build.sh` e
-`outputDirectory: build/web`. O script baixa o Flutter (versão em
-`FLUTTER_VERSION`, padrão `3.44.2`) e roda `flutter build web --release`. Como
-o app é servido na **raiz** do domínio na Vercel, o `--base-href` fica `/`
-(padrão) — diferente do GitHub Pages. O `rewrites` catch-all serve `index.html`
-para rotas desconhecidas (a Vercel checa o filesystem antes, então os assets
-continuam sendo servidos diretamente).
+Na Vercel: **Add New → Project → importar o repositório**; nada mais a
+configurar (lê o `vercel.json`). O CI do GitHub (`ci.yml`) segue rodando
+`analyze` + `test`, mas não faz deploy.
 
 ## Ao alterar o projeto
 
