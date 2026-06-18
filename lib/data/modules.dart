@@ -247,6 +247,99 @@ const List<StudyModule> kModules = [
   ),
 ];
 
+/// Um grupo de módulos exibido como uma seção na tela inicial.
+class ModuleGroup {
+  const ModuleGroup({
+    required this.label,
+    required this.icon,
+    required this.moduleIds,
+  });
+
+  final String label;
+  final IconData icon;
+  final List<String> moduleIds;
+}
+
+/// Agrupamento dos módulos por tipo, para facilitar a navegação do iniciante.
+const List<ModuleGroup> kModuleGroups = [
+  ModuleGroup(
+    label: 'Verbos — vocabulário',
+    icon: Icons.bolt_outlined,
+    moduleIds: ['verbos_presente', 'verbos_infinitivo', 'verbos_avancados'],
+  ),
+  ModuleGroup(
+    label: 'Verbos — tempos e conjugação',
+    icon: Icons.table_rows_outlined,
+    moduleIds: [
+      'verbos_conjugacao',
+      'verbos_passato',
+      'verbos_passato_remoto',
+      'verbos_imperfetto',
+      'verbos_trapassato',
+      'verbos_futuro',
+      'verbos_futuro_anteriore',
+      'verbos_condizionale',
+      'verbos_condizionale_passato',
+      'verbos_cong_presente',
+      'verbos_cong_imperfetto',
+      'verbos_cong_passato',
+      'verbos_cong_trapassato',
+      'verbos_imperativo',
+    ],
+  ),
+  ModuleGroup(
+    label: 'Gramática',
+    icon: Icons.rule,
+    moduleIds: ['artigos', 'preposicoes', 'adverbios', 'conjuncoes'],
+  ),
+  ModuleGroup(
+    label: 'Vocabulário',
+    icon: Icons.menu_book_outlined,
+    moduleIds: [
+      'essenciais',
+      'substantivos',
+      'adjetivos',
+      'numeros',
+      'cores',
+      'familia',
+      'corpo',
+      'roupas',
+      'comida',
+      'casa',
+      'animais',
+      'natureza',
+      'lugares',
+      'transporte',
+      'compras',
+      'profissoes',
+      'educacao',
+      'saude',
+      'tecnologia',
+      'tempo',
+      'emocoes',
+      'saudacoes',
+      'abstratos',
+      'expressoes',
+    ],
+  ),
+  ModuleGroup(
+    label: 'Meus cartões',
+    icon: Icons.star_outline,
+    moduleIds: ['personalizados'],
+  ),
+];
+
+StudyModule moduleById(String id) {
+  return kModules.firstWhere(
+    (m) => m.id == id,
+    orElse: () => const StudyModule(
+      id: '?',
+      label: 'Outro',
+      icon: Icons.help_outline,
+    ),
+  );
+}
+
 String moduleLabel(String id) {
   return kModules
       .firstWhere(

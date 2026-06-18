@@ -81,6 +81,25 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  /// Estado de seleção de um grupo: nenhum, alguns ou todos.
+  _GroupSel _groupState(ModuleGroup group) {
+    final selected =
+        group.moduleIds.where((id) => _selected.contains(id)).length;
+    if (selected == 0) return _GroupSel.none;
+    if (selected == group.moduleIds.length) return _GroupSel.all;
+    return _GroupSel.some;
+  }
+
+  void _toggleGroup(ModuleGroup group) {
+    setState(() {
+      if (_groupState(group) == _GroupSel.all) {
+        _selected.removeAll(group.moduleIds);
+      } else {
+        _selected.addAll(group.moduleIds);
+      }
+    });
+  }
+
   void _toggleModule(String id) {
     setState(() {
       if (_selected.contains(id)) {
@@ -179,19 +198,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 const SizedBox(height: 4),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    for (final m in kModules)
-                      _ModuleChip(
-                        module: m,
-                        selected: _selected.contains(m.id),
-                        onTap: () => _toggleModule(m.id),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 8),
+                for (final group in kModuleGroups) ...[
+                  _GroupHeader(
+                    group: group,
+                    state: _groupState(group),
+                    onToggle: () => _toggleGroup(group),
+                  ),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final id in group.moduleIds)
+                        _ModuleChip(
+                          module: moduleById(id),
+                          selected: _selected.contains(id),
+                          onTap: () => _toggleModule(id),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                ],
                 Text(
                   '$_availableCards cartões disponíveis na seleção',
                   style: theme.textTheme.bodySmall?.copyWith(
@@ -401,6 +428,59 @@ class _DirectionSelector extends StatelessWidget {
       selected: {value},
       showSelectedIcon: false,
       onSelectionChanged: (s) => onChanged(s.first),
+    );
+  }
+}
+
+enum _GroupSel { none, some, all }
+
+class _GroupHeader extends StatelessWidget {
+  const _GroupHeader({
+    required this.group,
+    required this.state,
+    required this.onToggle,
+  });
+
+  final ModuleGroup group;
+  final _GroupSel state;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final IconData box;
+    switch (state) {
+      case _GroupSel.all:
+        box = Icons.check_box;
+        break;
+      case _GroupSel.some:
+        box = Icons.indeterminate_check_box;
+        break;
+      case _GroupSel.none:
+        box = Icons.check_box_outline_blank;
+        break;
+    }
+    return InkWell(
+      onTap: onToggle,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            Icon(group.icon, size: 18, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                group.label,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            Icon(box, size: 20, color: theme.colorScheme.primary),
+          ],
+        ),
+      ),
     );
   }
 }
