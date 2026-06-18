@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _StatsBar(bestScore: _bestScore, sessions: _totalSessions),
                 const SizedBox(height: 24),
 
-                _SectionTitle('Sentido da tradução'),
+                const _SectionTitle('Sentido da tradução'),
                 const SizedBox(height: 8),
                 _DirectionSelector(
                   value: _direction,
@@ -117,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _SectionTitle('Módulos / áreas'),
+                    const _SectionTitle('Módulos / áreas'),
                     TextButton.icon(
                       onPressed: _toggleAll,
                       icon: Icon(
@@ -152,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                _SectionTitle('Número de perguntas'),
+                const _SectionTitle('Número de perguntas'),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,

@@ -111,18 +111,18 @@ class _QuizScreenState extends State<QuizScreen> {
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        if (await _confirmExit() && mounted) {
-          Navigator.of(context).pop();
-        }
+        final shouldLeave = await _confirmExit();
+        if (!mounted) return;
+        if (shouldLeave) Navigator.of(context).pop();
       },
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.close),
             onPressed: () async {
-              if (await _confirmExit() && mounted) {
-                Navigator.of(context).pop();
-              }
+              final shouldLeave = await _confirmExit();
+              if (!mounted) return;
+              if (shouldLeave) Navigator.of(context).pop();
             },
           ),
           title: AnimatedBuilder(
