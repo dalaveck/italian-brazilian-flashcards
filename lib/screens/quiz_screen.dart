@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../data/modules.dart';
+import '../i18n/strings.dart';
 import '../models/flashcard.dart';
 import '../state/quiz_config.dart';
 import '../state/quiz_session.dart';
@@ -89,16 +89,16 @@ class _QuizScreenState extends State<QuizScreen> {
     final leave = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Sair da sessão?'),
-        content: const Text('Seu progresso atual será perdido.'),
+        title: Text(S.exitTitle),
+        content: Text(S.exitContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Continuar'),
+            child: Text(S.continueLabel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Sair'),
+            child: Text(S.exit),
           ),
         ],
       ),
@@ -210,9 +210,9 @@ class _QuizScreenState extends State<QuizScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'Traduza do ${question.promptLang} • '
+                        '${S.translateFrom(S.languageName(italian: !question.askingItalian))} • '
                         '${question.card.level.label} · '
-                        '${moduleLabel(question.card.moduleId)}',
+                        '${S.module(question.card.moduleId)}',
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: theme.colorScheme.primary,
                         ),
@@ -236,7 +236,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Responda em ${question.answerLang}',
+                      S.answerIn(S.languageName(italian: question.askingItalian)),
                       style: theme.textTheme.bodySmall
                           ?.copyWith(color: Colors.white54),
                     ),
@@ -276,11 +276,11 @@ class _QuizScreenState extends State<QuizScreen> {
             inputFormatters: [LengthLimitingTextInputFormatter(60)],
             onSubmitted: (_) => _submit(),
             decoration: InputDecoration(
-              hintText: 'Digite a tradução…',
+              hintText: S.inputHint,
               prefixIcon: const Icon(Icons.keyboard_alt_outlined),
               suffixIcon: (question.card.hint != null && outcome == null)
                   ? IconButton(
-                      tooltip: 'Dica',
+                      tooltip: S.hintTooltip,
                       icon: const Icon(Icons.lightbulb_outline),
                       onPressed: () => setState(() => _showHint = true),
                     )
@@ -295,7 +295,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   flex: 2,
                   child: OutlinedButton(
                     onPressed: _skip,
-                    child: const Text('Pular'),
+                    child: Text(S.skip),
                   ),
                 ),
               if (outcome == null) const SizedBox(width: 12),
@@ -305,10 +305,10 @@ class _QuizScreenState extends State<QuizScreen> {
                   onPressed: _submit,
                   child: Text(
                     outcome == null
-                        ? 'Responder'
+                        ? S.answer
                         : (_session.position == _session.total
-                            ? 'Ver resultado'
-                            : 'Próxima'),
+                            ? S.seeResult
+                            : S.next),
                   ),
                 ),
               ),
@@ -338,7 +338,7 @@ class _ScorePill extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          '$score pts',
+          '$score ${S.pts}',
           style: Theme.of(context)
               .textTheme
               .titleMedium
@@ -346,7 +346,7 @@ class _ScorePill extends StatelessWidget {
         ),
         if (streak > 1)
           Text(
-            '🔥 $streak seguidas',
+            S.streak(streak),
             style: Theme.of(context)
                 .textTheme
                 .labelSmall
@@ -392,7 +392,7 @@ class _FeedbackBox extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                correct ? 'Correto!' : 'Quase!',
+                correct ? S.correct : S.almost,
                 style: TextStyle(
                   color: color,
                   fontWeight: FontWeight.bold,
@@ -415,7 +415,7 @@ class _FeedbackBox extends StatelessWidget {
             Text.rich(
               TextSpan(
                 children: [
-                  const TextSpan(text: 'Resposta: '),
+                  TextSpan(text: S.answerLabel),
                   TextSpan(
                     text: expected,
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -427,7 +427,7 @@ class _FeedbackBox extends StatelessWidget {
           if (alternatives.isNotEmpty) ...[
             const SizedBox(height: 4),
             Text(
-              'Também aceito: ${alternatives.join(', ')}',
+              S.alsoAccepted(alternatives.join(', ')),
               style: const TextStyle(color: Colors.white60, fontSize: 12),
             ),
           ],

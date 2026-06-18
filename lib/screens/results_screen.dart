@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../i18n/strings.dart';
 import '../services/score_store.dart';
 import '../state/quiz_config.dart';
 import '../state/quiz_session.dart';
@@ -46,13 +47,6 @@ class _ResultsScreenState extends State<ResultsScreen> {
     return '📈';
   }
 
-  String _message(double accuracy) {
-    if (accuracy >= 0.9) return 'Eccellente! Desempenho excelente!';
-    if (accuracy >= 0.7) return 'Molto bene! Muito bom!';
-    if (accuracy >= 0.5) return 'Bene! Continue praticando.';
-    return 'Coraggio! A prática leva à perfeição.';
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -77,7 +71,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                 ),
                 Center(
                   child: Text(
-                    'Sessão concluída',
+                    S.sessionDone,
                     style: theme.textTheme.headlineSmall
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
@@ -85,7 +79,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                 const SizedBox(height: 4),
                 Center(
                   child: Text(
-                    _message(s.accuracy),
+                    S.resultMessage(s.accuracy),
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyMedium
                         ?.copyWith(color: Colors.white70),
@@ -103,9 +97,9 @@ class _ResultsScreenState extends State<ResultsScreen> {
                         border: Border.all(
                             color: Colors.amber.withValues(alpha: .6)),
                       ),
-                      child: const Text(
-                        '🏆 Novo recorde de pontuação!',
-                        style: TextStyle(
+                      child: Text(
+                        S.newRecord,
+                        style: const TextStyle(
                           color: Colors.amber,
                           fontWeight: FontWeight.bold,
                         ),
@@ -125,7 +119,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                   ),
                 ),
                 Center(
-                  child: Text('pontos', style: theme.textTheme.bodyMedium),
+                  child: Text(S.pointsWord, style: theme.textTheme.bodyMedium),
                 ),
                 const SizedBox(height: 24),
 
@@ -133,14 +127,14 @@ class _ResultsScreenState extends State<ResultsScreen> {
                   children: [
                     _StatCard(
                       icon: Icons.check_circle_outline,
-                      label: 'Acertos',
+                      label: S.statHits,
                       value: '${s.correct}/${s.total}',
                       color: Colors.greenAccent,
                     ),
                     const SizedBox(width: 12),
                     _StatCard(
                       icon: Icons.percent,
-                      label: 'Precisão',
+                      label: S.statAccuracy,
                       value: '$accuracyPct%',
                       color: theme.colorScheme.primary,
                     ),
@@ -151,14 +145,14 @@ class _ResultsScreenState extends State<ResultsScreen> {
                   children: [
                     _StatCard(
                       icon: Icons.cancel_outlined,
-                      label: 'Erros',
+                      label: S.statErrors,
                       value: '$wrong',
                       color: Colors.redAccent,
                     ),
                     const SizedBox(width: 12),
                     _StatCard(
                       icon: Icons.local_fire_department_outlined,
-                      label: 'Melhor seq.',
+                      label: S.statBestStreak,
                       value: '${s.bestStreak}',
                       color: Colors.orangeAccent,
                     ),
@@ -168,7 +162,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                   const SizedBox(height: 12),
                   _StatCard(
                     icon: Icons.timer_outlined,
-                    label: 'Tempo total',
+                    label: S.statTotalTime,
                     value: _formatLong(s.elapsed),
                     color: Colors.lightBlueAccent,
                     fullWidth: true,
@@ -185,14 +179,14 @@ class _ResultsScreenState extends State<ResultsScreen> {
                     );
                   },
                   icon: const Icon(Icons.replay),
-                  label: const Text('Jogar de novo'),
+                  label: Text(S.playAgain),
                 ),
                 const SizedBox(height: 12),
                 OutlinedButton.icon(
                   onPressed: () =>
                       Navigator.of(context).popUntil((r) => r.isFirst),
                   icon: const Icon(Icons.tune),
-                  label: const Text('Alterar configurações'),
+                  label: Text(S.changeSettings),
                 ),
               ],
             ),
