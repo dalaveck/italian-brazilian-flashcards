@@ -19,7 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final Set<String> _selected = {...kModules.map((m) => m.id)};
   final Set<CefrLevel> _levels = {...CefrLevel.values};
   Direction _direction = Direction.itToPt;
-  int _count = 15;
+  int _count = 20;
+  bool _allQuestions = false;
   bool _timer = true;
   bool _shuffle = true;
 
@@ -27,7 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int _bestScore = 0;
   int _totalSessions = 0;
 
-  static const List<int> _countOptions = [10, 15, 20, 30, 0];
+  static const double _minCount = 5;
+  static const double _maxCount = 150;
 
   @override
   void initState() {
@@ -110,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
       moduleIds: {..._selected},
       levels: {..._levels},
       direction: _direction,
-      questionCount: _count,
+      questionCount: _allQuestions ? 0 : _count,
       timerEnabled: _timer,
       shuffle: _shuffle,
     );
@@ -204,20 +206,62 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                const _SectionTitle('Número de perguntas'),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    for (final opt in _countOptions)
-                      ChoiceChip(
-                        label: Text(opt == 0 ? 'Todas' : '$opt'),
-                        selected: _count == opt,
-                        onSelected: (_) => setState(() => _count = opt),
+                    const _SectionTitle('Número de perguntas'),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withValues(alpha: .15),
+                        borderRadius: BorderRadius.circular(20),
                       ),
+                      child: Text(
+                        _allQuestions ? 'Todas' : '$_count',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 4),
+                Slider(
+                  value: _count.toDouble(),
+                  min: _minCount,
+                  max: _maxCount,
+                  divisions: ((_maxCount - _minCount) / 5).round(),
+                  label: '$_count',
+                  onChanged: _allQuestions
+                      ? null
+                      : (v) => setState(() => _count = v.round()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${_minCount.round()}',
+                          style: theme.textTheme.bodySmall
+                              ?.copyWith(color: Colors.white54)),
+                      Text('${_maxCount.round()}',
+                          style: theme.textTheme.bodySmall
+                              ?.copyWith(color: Colors.white54)),
+                    ],
+                  ),
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: _allQuestions,
+                  onChanged: (v) => setState(() => _allQuestions = v),
+                  title: const Text('Todas as perguntas'),
+                  subtitle: const Text(
+                    'Usa todos os cartões da seleção (ignora a barra)',
+                  ),
+                ),
+                const SizedBox(height: 8),
 
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
