@@ -151,6 +151,11 @@ const List<StudyModule> kModules = [
     icon: Icons.table_rows_outlined,
   ),
   StudyModule(
+    id: 'essenciais',
+    label: 'Vocabulário essencial',
+    icon: Icons.menu_book_outlined,
+  ),
+  StudyModule(
     id: 'adverbios',
     label: 'Advérbios',
     icon: Icons.speed,

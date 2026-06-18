@@ -36,8 +36,10 @@ lib/
     cards_b2.dart            # vocabulário B2
     cards_c1.dart            # vocabulário C1 (inclui expressões idiomáticas)
     cards_conjugacoes.dart   # GERADO: 1100+ conjugações (6 pessoas) — não editar
+    cards_essenciais.dart    # GERADO: 1000+ palavras essenciais — não editar
 tools/
   gen_conjugations.py        # gera cards_conjugacoes.dart (rode e substitua)
+  gen_essentials.py          # gera cards_essenciais.dart (rode e substitua)
   services/
     answer_checker.dart      # normalização e comparação de respostas
     score_store.dart         # persistência de recordes (shared_preferences)
@@ -83,6 +85,11 @@ vercel-build.sh              # baixa o Flutter SDK e roda `flutter build web`
   imperfeito/futuro). Para alterar, edite a lista `VERBS` no script, rode
   `python3 tools/gen_conjugations.py` e comite o arquivo regerado — não edite o
   `.dart` à mão.
+- **Vocabulário essencial:** o módulo `essenciais` (em `cards_essenciais.dart`)
+  é **gerado** por `tools/gen_essentials.py`, que traz adjetivos e substantivos
+  com singular e plural (formas fornecidas explicitamente nas tabelas, inclusive
+  plurais irregulares IT/PT). Para alterar, edite as tabelas no script, rode
+  `python3 tools/gen_essentials.py` e comite o `.dart` regerado.
 - **Seleção do usuário:** `QuizConfig` carrega `moduleIds` + `levels`;
   `CardRepository.cardsForSelection(moduleIds, levels)` filtra por ambos
   (conjunto de níveis vazio = todos os níveis).
