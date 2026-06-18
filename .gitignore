@@ -16,3 +16,8 @@ pubspec.lock
 # OS
 .DS_Store
 Thumbs.db
+
+# Vercel
+.vercel/
+# SDK do Flutter baixado durante o build (caso clonado localmente)
+/flutter/

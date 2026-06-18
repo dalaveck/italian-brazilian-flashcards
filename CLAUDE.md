@@ -50,6 +50,8 @@ web/                         # index.html, manifest, ícones
 .github/workflows/
   deploy.yml                 # build web + deploy no Pages (push na main)
   ci.yml                     # analyze + test (branches/PRs)
+vercel.json                  # config de deploy na Vercel
+vercel-build.sh              # baixa o Flutter SDK e roda `flutter build web`
 ```
 
 ## Regras e convenções
@@ -92,6 +94,16 @@ O deploy é automático: ao dar **push na branch `main`**, o workflow
 
 Se o repositório for renomeado, atualize o `--base-href` em `deploy.yml` para
 `/<novo-nome>/`.
+
+### Vercel
+
+`vercel.json` define `buildCommand: bash vercel-build.sh` e
+`outputDirectory: build/web`. O script baixa o Flutter (versão em
+`FLUTTER_VERSION`, padrão `3.44.2`) e roda `flutter build web --release`. Como
+o app é servido na **raiz** do domínio na Vercel, o `--base-href` fica `/`
+(padrão) — diferente do GitHub Pages. O `rewrites` catch-all serve `index.html`
+para rotas desconhecidas (a Vercel checa o filesystem antes, então os assets
+continuam sendo servidos diretamente).
 
 ## Ao alterar o projeto
 

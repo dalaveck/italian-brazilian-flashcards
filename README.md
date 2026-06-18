@@ -53,8 +53,36 @@ O deploy é **automático via GitHub Actions**. Passo único de configuração:
 O site ficará em `https://<usuario>.github.io/<repositorio>/`. Se renomear o
 repositório, ajuste o `--base-href` em `deploy.yml`.
 
-> Alternativas de hospedagem (mesmo build `build/web`): Netlify, Vercel,
+> Alternativas de hospedagem (mesmo build `build/web`): Netlify,
 > Cloudflare Pages, Firebase Hosting — basta servir a pasta `build/web`.
+
+## ▲ Publicar na Vercel
+
+O projeto já vem pronto para a Vercel (veja [`vercel.json`](vercel.json) e
+[`vercel-build.sh`](vercel-build.sh)). O Vercel não traz o Flutter
+pré-instalado, então o script de build baixa o SDK e compila o app.
+
+**Pela interface da Vercel (recomendado):**
+
+1. Em [vercel.com](https://vercel.com), clique em **Add New → Project** e
+   importe este repositório do GitHub.
+2. Não é preciso configurar nada: a Vercel lê o `vercel.json`
+   (build = `bash vercel-build.sh`, output = `build/web`).
+3. Clique em **Deploy**. O site fica em `https://<seu-projeto>.vercel.app`.
+
+**Pela CLI:**
+
+```bash
+npm i -g vercel
+vercel        # pré-visualização
+vercel --prod # produção
+```
+
+> Diferença para o GitHub Pages: na Vercel o app roda na **raiz** do domínio,
+> então o `--base-href` é `/` (padrão). No GitHub Pages ele precisa ser
+> `/italian-brazilian-flashcards/`. Por isso cada um tem seu próprio fluxo.
+> Para fixar a versão do Flutter no build da Vercel, defina a variável de
+> ambiente `FLUTTER_VERSION` (padrão: `3.44.2`).
 
 ## 🧩 Como adicionar palavras
 
