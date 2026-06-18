@@ -18,7 +18,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final Set<String> _selected = {...kModules.map((m) => m.id)};
+  // Começa vazio: o usuário escolhe quais módulos quer estudar ao entrar no site
+  // (em vez de vir tudo marcado e ter de clicar em "Limpar").
+  final Set<String> _selected = {};
   final Set<CefrLevel> _levels = {...CefrLevel.values};
   Direction _direction = Direction.itToPt;
   int _count = 20;
