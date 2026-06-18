@@ -37,9 +37,11 @@ lib/
     cards_c1.dart            # vocabulário C1 (inclui expressões idiomáticas)
     cards_conjugacoes.dart   # GERADO: 1100+ conjugações (6 pessoas) — não editar
     cards_essenciais.dart    # GERADO: 1000+ palavras essenciais — não editar
+    cards_tempos.dart        # GERADO: passato/imperfetto/futuro/imperativo — não editar
 tools/
   gen_conjugations.py        # gera cards_conjugacoes.dart (rode e substitua)
   gen_essentials.py          # gera cards_essenciais.dart (rode e substitua)
+  gen_tenses.py              # gera cards_tempos.dart (rode e substitua)
   services/
     answer_checker.dart      # normalização e comparação de respostas
     score_store.dart         # persistência de recordes (shared_preferences)
@@ -90,6 +92,12 @@ vercel-build.sh              # baixa o Flutter SDK e roda `flutter build web`
   com singular e plural (formas fornecidas explicitamente nas tabelas, inclusive
   plurais irregulares IT/PT). Para alterar, edite as tabelas no script, rode
   `python3 tools/gen_essentials.py` e comite o `.dart` regerado.
+- **Tempos verbais (passato prossimo, imperfetto, futuro semplice,
+  imperativo):** gerados por `tools/gen_tenses.py` em `cards_tempos.dart`
+  (módulos `verbos_passato/imperfetto/futuro/imperativo`). Só verbos regulares;
+  particípios irregulares do italiano são dados explícitos na lista `V` e a
+  ortografia do PT (-car/-gar/-çar) é tratada por regra. Para alterar, edite `V`,
+  rode `python3 tools/gen_tenses.py` e comite o `.dart`.
 - **Seleção do usuário:** `QuizConfig` carrega `moduleIds` + `levels`;
   `CardRepository.cardsForSelection(moduleIds, levels)` filtra por ambos
   (conjunto de níveis vazio = todos os níveis).

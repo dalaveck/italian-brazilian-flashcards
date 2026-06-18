@@ -151,6 +151,26 @@ const List<StudyModule> kModules = [
     icon: Icons.table_rows_outlined,
   ),
   StudyModule(
+    id: 'verbos_passato',
+    label: 'Passato prossimo',
+    icon: Icons.history,
+  ),
+  StudyModule(
+    id: 'verbos_imperfetto',
+    label: 'Imperfetto',
+    icon: Icons.history_toggle_off,
+  ),
+  StudyModule(
+    id: 'verbos_futuro',
+    label: 'Futuro semplice',
+    icon: Icons.update,
+  ),
+  StudyModule(
+    id: 'verbos_imperativo',
+    label: 'Imperativo',
+    icon: Icons.campaign_outlined,
+  ),
+  StudyModule(
     id: 'essenciais',
     label: 'Vocabulário essencial',
     icon: Icons.menu_book_outlined,
