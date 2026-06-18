@@ -10,9 +10,11 @@ sessão.
 ## ✨ Recursos
 
 - **~7000 cartões** organizados por **nível CEFR (A1 → C1)** e por tópico:
-  - **conjugação verbal** cobrindo as 6 pessoas (io, tu, lui/lei, noi, voi,
-    loro) em **presente, passato prossimo, imperfetto, futuro semplice e
-    imperativo** (~1000 cartões em cada tempo);
+  - **conjugação verbal** cobrindo todas as pessoas em **todos os tempos/modos**
+    — presente, passato prossimo, passato remoto, imperfetto, trapassato
+    prossimo, futuro semplice, futuro anteriore, condizionale (presente e
+    passato), congiuntivo (presente, imperfetto, passato e trapassato) e
+    imperativo (~1000 cartões em cada);
   - **+1000 de vocabulário essencial** (adjetivos, substantivos no singular
     **e** plural, verbos, advérbios, pronomes e conectores).
 - **Filtro por nível (A1–C1)** e por **módulo/área** — combine como quiser.

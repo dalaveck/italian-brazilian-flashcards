@@ -6,6 +6,7 @@ import 'cards_c1.dart';
 import 'cards_conjugacoes.dart';
 import 'cards_essenciais.dart';
 import 'cards_tempos.dart';
+import 'cards_tempos2.dart';
 
 /// Banco completo de flashcards, organizado por nível (A1–C1) e por módulo.
 ///
@@ -248,6 +249,15 @@ const List<Flashcard> kAllCards = [
   ...kCardsImperfetto,
   ...kCardsFuturo,
   ...kCardsImperativo,
+  ...kCardsPassatoRemoto,
+  ...kCardsTrapassato,
+  ...kCardsFuturoAnteriore,
+  ...kCardsCondizionale,
+  ...kCardsCondizionalePassato,
+  ...kCardsCongPresente,
+  ...kCardsCongImperfetto,
+  ...kCardsCongPassato,
+  ...kCardsCongTrapassato,
 ];
 
 /// Retorna os cartões dos módulos selecionados (todos os níveis).

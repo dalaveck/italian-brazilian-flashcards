@@ -171,6 +171,51 @@ const List<StudyModule> kModules = [
     icon: Icons.campaign_outlined,
   ),
   StudyModule(
+    id: 'verbos_passato_remoto',
+    label: 'Passato remoto',
+    icon: Icons.auto_stories_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_trapassato',
+    label: 'Trapassato prossimo',
+    icon: Icons.fast_rewind,
+  ),
+  StudyModule(
+    id: 'verbos_futuro_anteriore',
+    label: 'Futuro anteriore',
+    icon: Icons.fast_forward,
+  ),
+  StudyModule(
+    id: 'verbos_condizionale',
+    label: 'Condizionale presente',
+    icon: Icons.help_center_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_condizionale_passato',
+    label: 'Condizionale passato',
+    icon: Icons.history_edu_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_cong_presente',
+    label: 'Congiuntivo presente',
+    icon: Icons.psychology_alt_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_cong_imperfetto',
+    label: 'Congiuntivo imperfetto',
+    icon: Icons.psychology_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_cong_passato',
+    label: 'Congiuntivo passato',
+    icon: Icons.menu_book,
+  ),
+  StudyModule(
+    id: 'verbos_cong_trapassato',
+    label: 'Congiuntivo trapassato',
+    icon: Icons.import_contacts,
+  ),
+  StudyModule(
     id: 'essenciais',
     label: 'Vocabulário essencial',
     icon: Icons.menu_book_outlined,

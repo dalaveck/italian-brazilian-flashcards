@@ -38,10 +38,12 @@ lib/
     cards_conjugacoes.dart   # GERADO: 1100+ conjugações (6 pessoas) — não editar
     cards_essenciais.dart    # GERADO: 1000+ palavras essenciais — não editar
     cards_tempos.dart        # GERADO: passato/imperfetto/futuro/imperativo — não editar
+    cards_tempos2.dart       # GERADO: passato remoto, trapassato, condizionale, congiuntivo...
 tools/
   gen_conjugations.py        # gera cards_conjugacoes.dart (rode e substitua)
   gen_essentials.py          # gera cards_essenciais.dart (rode e substitua)
   gen_tenses.py              # gera cards_tempos.dart (rode e substitua)
+  gen_tenses2.py             # gera cards_tempos2.dart (importa V de gen_tenses)
   services/
     answer_checker.dart      # normalização e comparação de respostas
     score_store.dart         # persistência de recordes (shared_preferences)
@@ -98,6 +100,12 @@ vercel-build.sh              # baixa o Flutter SDK e roda `flutter build web`
   particípios irregulares do italiano são dados explícitos na lista `V` e a
   ortografia do PT (-car/-gar/-çar) é tratada por regra. Para alterar, edite `V`,
   rode `python3 tools/gen_tenses.py` e comite o `.dart`.
+- **Demais tempos/modos (passato remoto, trapassato prossimo, futuro anteriore,
+  condizionale presente/passato, congiuntivo presente/imperfetto/passato/
+  trapassato):** gerados por `tools/gen_tenses2.py`, que **reaproveita a lista
+  `V` de `gen_tenses.py`** e os particípios; os tempos compostos usam `avere` +
+  particípio, com particípios irregulares do PT (`escrito`, `aberto`, `gasto`,
+  `aceito`) tratados por dicionário. Saída em `cards_tempos2.dart`.
 - **Seleção do usuário:** `QuizConfig` carrega `moduleIds` + `levels`;
   `CardRepository.cardsForSelection(moduleIds, levels)` filtra por ambos
   (conjunto de níveis vazio = todos os níveis).
