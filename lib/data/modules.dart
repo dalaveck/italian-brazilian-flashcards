@@ -75,6 +75,11 @@ const List<StudyModule> kModules = [
     label: 'Tempo e dias',
     icon: Icons.calendar_today_outlined,
   ),
+  StudyModule(
+    id: 'personalizados',
+    label: 'Meus cartões',
+    icon: Icons.star_outline,
+  ),
 ];
 
 String moduleLabel(String id) {

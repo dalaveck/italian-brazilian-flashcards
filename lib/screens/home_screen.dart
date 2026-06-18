@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../data/decks.dart';
 import '../data/modules.dart';
 import '../models/flashcard.dart';
 import '../services/score_store.dart';
+import '../state/card_repository.dart';
 import '../state/quiz_config.dart';
+import 'custom_cards_screen.dart';
 import 'quiz_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,7 +47,14 @@ class _HomeScreenState extends State<HomeScreen> {
   bool get _allSelected => _selected.length == kModules.length;
 
   int get _availableCards =>
-      cardsForModules(_selected).length;
+      CardRepository.instance.cardsForModules(_selected).length;
+
+  Future<void> _openCustomCards() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const CustomCardsScreen()),
+    );
+    if (mounted) setState(() {}); // atualiza a contagem de cartões disponíveis
+  }
 
   void _toggleAll() {
     setState(() {
@@ -149,6 +157,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.white60,
                   ),
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: _openCustomCards,
+                  icon: const Icon(Icons.library_add_outlined),
+                  label: const Text('Criar / gerenciar meus cartões'),
                 ),
                 const SizedBox(height: 24),
 

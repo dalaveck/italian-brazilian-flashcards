@@ -6,12 +6,11 @@ repositório. Leia antes de fazer alterações.
 ## Visão geral
 
 App de **flashcards Italiano ⇄ Português brasileiro**, feito em **Flutter
-(Web)** e publicado no **GitHub Pages**. O usuário escolhe módulos (verbos no
+(Web)** e publicado na **Vercel**. O usuário escolhe módulos (verbos no
 presente, preposições, artigos, etc.), o sentido da tradução, digita a resposta
 e recebe pontuação; há cronômetro opcional.
 
-URL de produção (após habilitar o Pages):
-`https://dalaveck.github.io/italian-brazilian-flashcards/`
+URL de produção: `https://<seu-projeto>.vercel.app`
 
 ## Stack
 
@@ -35,18 +34,22 @@ lib/
   services/
     answer_checker.dart      # normalização e comparação de respostas
     score_store.dart         # persistência de recordes (shared_preferences)
+    custom_card_store.dart   # persistência dos cartões do usuário (JSON)
   state/
     quiz_config.dart         # configuração escolhida na home
     quiz_session.dart        # lógica/estado de uma sessão (pontuação, fluxo)
+    card_repository.dart     # combina kAllCards + cartões do usuário (singleton)
   screens/
     home_screen.dart         # seleção de módulos/sentido/opções
     quiz_screen.dart         # tela de pergunta + cronômetro + digitação
     results_screen.dart      # placar final
+    custom_cards_screen.dart # criar/editar/excluir cartões do usuário
 test/                        # testes unitários (answer checker, sessão)
 web/                         # index.html, manifest, ícones
 .github/workflows/
-  deploy.yml                 # build web + deploy no Pages (push na main)
   ci.yml                     # analyze + test (branches/PRs)
+vercel.json                  # config de deploy na Vercel
+vercel-build.sh              # baixa o Flutter SDK e roda `flutter build web`
 ```
 
 ## Regras e convenções
@@ -60,10 +63,16 @@ web/                         # index.html, manifest, ícones
 - A comparação de respostas (`AnswerChecker`) é tolerante: ignora
   maiúsculas/minúsculas, acentuação, pontuação e artigo inicial. Ao mexer nisso,
   mantenha os testes em `test/answer_checker_test.dart` passando.
-- **Para adicionar vocabulário:** edite só `lib/data/decks.dart`. Cada cartão é
-  um `Flashcard(moduleId, it, pt, itAlt?, ptAlt?, hint?)`. Use `itAlt`/`ptAlt`
-  para sinônimos/variantes aceitas. Para um módulo novo, adicione a entrada em
-  `lib/data/modules.dart` (id + label + ícone) e cartões com esse `moduleId`.
+- **Para adicionar vocabulário interno:** edite só `lib/data/decks.dart`. Cada
+  cartão é um `Flashcard(moduleId, it, pt, itAlt?, ptAlt?, hint?)`. Use
+  `itAlt`/`ptAlt` para sinônimos/variantes aceitas. Para um módulo novo,
+  adicione a entrada em `lib/data/modules.dart` (id + label + ícone) e cartões
+  com esse `moduleId`.
+- **Cartões do usuário:** criados em `custom_cards_screen.dart`, persistidos por
+  `custom_card_store.dart` e expostos via `CardRepository.instance` (carregado no
+  `main()` antes do `runApp`). `QuizSession` monta as perguntas a partir de
+  `CardRepository.instance.cardsForModules(...)`, que une internos + do usuário.
+  Cartões do usuário têm `Flashcard.id` (os internos têm `id == null`).
 
 ## Comandos
 
@@ -72,17 +81,22 @@ flutter pub get
 flutter run -d chrome          # desenvolvimento local (web)
 flutter test                   # testes
 flutter analyze                # lint/análise estática
-flutter build web --release --base-href "/italian-brazilian-flashcards/"
+flutter build web --release    # base-href padrão "/" (raiz do domínio)
 ```
 
-## Publicação
+## Publicação (Vercel)
 
-O deploy é automático: ao dar **push na branch `main`**, o workflow
-`deploy.yml` compila o web e publica no GitHub Pages. Pré-requisito único
-(feito uma vez no GitHub): **Settings → Pages → Source = "GitHub Actions"**.
+Deploy via **Vercel**. `vercel.json` define `buildCommand: bash vercel-build.sh`
+e `outputDirectory: build/web`. O script baixa o Flutter (versão em
+`FLUTTER_VERSION`, padrão `3.44.2`) e roda `flutter build web --release`. Como o
+app é servido na **raiz** do domínio na Vercel, o `--base-href` fica `/`
+(padrão). O `rewrites` catch-all serve `index.html` para rotas desconhecidas (a
+Vercel checa o filesystem antes, então os assets continuam sendo servidos
+diretamente).
 
-Se o repositório for renomeado, atualize o `--base-href` em `deploy.yml` para
-`/<novo-nome>/`.
+Na Vercel: **Add New → Project → importar o repositório**; nada mais a
+configurar (lê o `vercel.json`). O CI do GitHub (`ci.yml`) segue rodando
+`analyze` + `test`, mas não faz deploy.
 
 ## Ao alterar o projeto
 

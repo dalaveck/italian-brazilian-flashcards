@@ -5,7 +5,7 @@ brasileiro**, feito em **Flutter Web**. Você escolhe os módulos, o sentido da
 tradução, **digita a resposta**, ganha **pontos** e pode **cronometrar** a
 sessão.
 
-> Produção (após habilitar o Pages): **https://dalaveck.github.io/italian-brazilian-flashcards/**
+> Hospedado na **Vercel** (veja a seção de deploy abaixo).
 
 ## ✨ Recursos
 
@@ -20,6 +20,9 @@ sessão.
   navegador.
 - Escolha do **número de perguntas** (10, 15, 20, 30 ou todas) e embaralhamento.
 - Tela de **resultados** com precisão, acertos/erros, melhor sequência e tempo.
+- **Crie seus próprios cartões** (módulo, italiano, português, sinônimos e
+  dica). Ficam **salvos no navegador** e continuam lá quando você volta; entram
+  normalmente nas sessões junto com os cartões internos.
 
 ## 🚀 Rodar localmente
 
@@ -38,20 +41,34 @@ flutter test
 flutter analyze
 ```
 
-## 🌐 Publicar na internet (GitHub Pages)
+## ▲ Publicar na Vercel
 
-O deploy é **automático via GitHub Actions**. Passo único de configuração:
+O projeto já vem pronto para a Vercel (veja [`vercel.json`](vercel.json) e
+[`vercel-build.sh`](vercel-build.sh)). O Vercel não traz o Flutter
+pré-instalado, então o script de build baixa o SDK e compila o app.
 
-1. No GitHub, vá em **Settings → Pages**.
-2. Em **Source**, selecione **"GitHub Actions"**.
-3. Faça merge/push na branch **`main`**. O workflow
-   [`deploy.yml`](.github/workflows/deploy.yml) compila o app e publica.
+**Pela interface da Vercel (recomendado):**
 
-O site ficará em `https://<usuario>.github.io/<repositorio>/`. Se renomear o
-repositório, ajuste o `--base-href` em `deploy.yml`.
+1. Em [vercel.com](https://vercel.com), clique em **Add New → Project** e
+   importe este repositório do GitHub.
+2. Não é preciso configurar nada: a Vercel lê o `vercel.json`
+   (build = `bash vercel-build.sh`, output = `build/web`).
+3. Clique em **Deploy**. O site fica em `https://<seu-projeto>.vercel.app`.
 
-> Alternativas de hospedagem (mesmo build `build/web`): Netlify, Vercel,
-> Cloudflare Pages, Firebase Hosting — basta servir a pasta `build/web`.
+**Pela CLI:**
+
+```bash
+npm i -g vercel
+vercel        # pré-visualização
+vercel --prod # produção
+```
+
+> O app roda na **raiz** do domínio na Vercel, então o `--base-href` é `/`
+> (padrão). Para fixar a versão do Flutter no build, defina a variável de
+> ambiente `FLUTTER_VERSION` no painel da Vercel (padrão: `3.44.2`).
+>
+> O mesmo `build/web` também serve em Netlify, Cloudflare Pages ou Firebase
+> Hosting, caso queira trocar de provedor.
 
 ## 🧩 Como adicionar palavras
 
