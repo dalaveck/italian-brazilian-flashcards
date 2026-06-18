@@ -19,7 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final Set<String> _selected = {...kModules.map((m) => m.id)};
   final Set<CefrLevel> _levels = {...CefrLevel.values};
   Direction _direction = Direction.itToPt;
-  int _count = 15;
+  int _count = 20;
+  bool _allQuestions = false;
   bool _timer = true;
   bool _shuffle = true;
 
@@ -27,7 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int _bestScore = 0;
   int _totalSessions = 0;
 
-  static const List<int> _countOptions = [10, 15, 20, 30, 0];
+  static const double _minCount = 5;
+  static const double _maxCount = 150;
 
   @override
   void initState() {
@@ -79,6 +81,25 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  /// Estado de seleção de um grupo: nenhum, alguns ou todos.
+  _GroupSel _groupState(ModuleGroup group) {
+    final selected =
+        group.moduleIds.where((id) => _selected.contains(id)).length;
+    if (selected == 0) return _GroupSel.none;
+    if (selected == group.moduleIds.length) return _GroupSel.all;
+    return _GroupSel.some;
+  }
+
+  void _toggleGroup(ModuleGroup group) {
+    setState(() {
+      if (_groupState(group) == _GroupSel.all) {
+        _selected.removeAll(group.moduleIds);
+      } else {
+        _selected.addAll(group.moduleIds);
+      }
+    });
+  }
+
   void _toggleModule(String id) {
     setState(() {
       if (_selected.contains(id)) {
@@ -110,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
       moduleIds: {..._selected},
       levels: {..._levels},
       direction: _direction,
-      questionCount: _count,
+      questionCount: _allQuestions ? 0 : _count,
       timerEnabled: _timer,
       shuffle: _shuffle,
     );
@@ -177,19 +198,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 const SizedBox(height: 4),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    for (final m in kModules)
-                      _ModuleChip(
-                        module: m,
-                        selected: _selected.contains(m.id),
-                        onTap: () => _toggleModule(m.id),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 8),
+                for (final group in kModuleGroups) ...[
+                  _GroupHeader(
+                    group: group,
+                    state: _groupState(group),
+                    onToggle: () => _toggleGroup(group),
+                  ),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final id in group.moduleIds)
+                        _ModuleChip(
+                          module: moduleById(id),
+                          selected: _selected.contains(id),
+                          onTap: () => _toggleModule(id),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                ],
                 Text(
                   '$_availableCards cartões disponíveis na seleção',
                   style: theme.textTheme.bodySmall?.copyWith(
@@ -204,20 +233,62 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                const _SectionTitle('Número de perguntas'),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    for (final opt in _countOptions)
-                      ChoiceChip(
-                        label: Text(opt == 0 ? 'Todas' : '$opt'),
-                        selected: _count == opt,
-                        onSelected: (_) => setState(() => _count = opt),
+                    const _SectionTitle('Número de perguntas'),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withValues(alpha: .15),
+                        borderRadius: BorderRadius.circular(20),
                       ),
+                      child: Text(
+                        _allQuestions ? 'Todas' : '$_count',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 4),
+                Slider(
+                  value: _count.toDouble(),
+                  min: _minCount,
+                  max: _maxCount,
+                  divisions: ((_maxCount - _minCount) / 5).round(),
+                  label: '$_count',
+                  onChanged: _allQuestions
+                      ? null
+                      : (v) => setState(() => _count = v.round()),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${_minCount.round()}',
+                          style: theme.textTheme.bodySmall
+                              ?.copyWith(color: Colors.white54)),
+                      Text('${_maxCount.round()}',
+                          style: theme.textTheme.bodySmall
+                              ?.copyWith(color: Colors.white54)),
+                    ],
+                  ),
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: _allQuestions,
+                  onChanged: (v) => setState(() => _allQuestions = v),
+                  title: const Text('Todas as perguntas'),
+                  subtitle: const Text(
+                    'Usa todos os cartões da seleção (ignora a barra)',
+                  ),
+                ),
+                const SizedBox(height: 8),
 
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
@@ -357,6 +428,59 @@ class _DirectionSelector extends StatelessWidget {
       selected: {value},
       showSelectedIcon: false,
       onSelectionChanged: (s) => onChanged(s.first),
+    );
+  }
+}
+
+enum _GroupSel { none, some, all }
+
+class _GroupHeader extends StatelessWidget {
+  const _GroupHeader({
+    required this.group,
+    required this.state,
+    required this.onToggle,
+  });
+
+  final ModuleGroup group;
+  final _GroupSel state;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final IconData box;
+    switch (state) {
+      case _GroupSel.all:
+        box = Icons.check_box;
+        break;
+      case _GroupSel.some:
+        box = Icons.indeterminate_check_box;
+        break;
+      case _GroupSel.none:
+        box = Icons.check_box_outline_blank;
+        break;
+    }
+    return InkWell(
+      onTap: onToggle,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            Icon(group.icon, size: 18, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                group.label,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            Icon(box, size: 20, color: theme.colorScheme.primary),
+          ],
+        ),
+      ),
     );
   }
 }
