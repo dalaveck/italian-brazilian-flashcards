@@ -28,6 +28,10 @@ lib/
   main.dart                  # bootstrap do app
   theme.dart                 # tema visual
   models/flashcard.dart      # Flashcard, Question, Direction
+  i18n/
+    app_locale.dart          # idioma da interface (PT/IT) + persistência
+    strings.dart             # textos da UI traduzidos (S.*) + rótulos PT/IT
+    language_selector.dart   # seletor de idioma (canto superior direito)
   data/
     modules.dart             # metadados dos módulos (id, label, ícone)
     decks.dart               # núcleo A1 (kCardsA1) + agrega kAllCards
@@ -68,6 +72,13 @@ vercel-build.sh              # baixa o Flutter SDK e roda `flutter build web`
 ## Regras e convenções
 
 - **Idioma da UI e dos commits: português (Brasil).**
+- **Idioma da interface (i18n):** o usuário escolhe PT ou IT no seletor do canto
+  superior direito (`i18n/language_selector.dart`). Isso muda **apenas os textos
+  do sistema** (rótulos, botões, módulos, níveis) — **não** altera o sentido das
+  traduções nem as respostas dos cartões. Todo texto visível deve passar por
+  `S.*` (`i18n/strings.dart`); ao criar um texto novo, adicione as duas formas
+  (PT/IT). Ao incluir um módulo novo em `data/modules.dart`, acrescente também a
+  tradução italiana em `_itModuleLabels` (e grupos em `_itGroupLabels`).
 - Toda lógica de pontuação vive em `quiz_session.dart`. Regras atuais:
   - +100 por acerto;
   - bônus de sequência: +10 × (sequência − 1);

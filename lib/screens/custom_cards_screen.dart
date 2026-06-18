@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/modules.dart';
+import '../i18n/strings.dart';
 import '../models/flashcard.dart';
 import '../state/card_repository.dart';
 
@@ -18,11 +19,11 @@ class _CustomCardsScreenState extends State<CustomCardsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Meus cartões')),
+      appBar: AppBar(title: Text(S.myCards)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openEditor,
         icon: const Icon(Icons.add),
-        label: const Text('Novo cartão'),
+        label: Text(S.newCard),
       ),
       body: SafeArea(
         child: Center(
@@ -76,7 +77,7 @@ class _CustomCardsScreenState extends State<CustomCardsScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(existing == null ? 'Cartão adicionado!' : 'Cartão atualizado!'),
+        content: Text(existing == null ? S.cardAdded : S.cardUpdated),
       ),
     );
   }
@@ -85,16 +86,16 @@ class _CustomCardsScreenState extends State<CustomCardsScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Excluir cartão?'),
+        title: Text(S.deleteCardTitle),
         content: Text('"${card.it}" → "${card.pt}"'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancelar'),
+            child: Text(S.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Excluir'),
+            child: Text(S.delete),
           ),
         ],
       ),
@@ -119,14 +120,13 @@ class _EmptyState extends StatelessWidget {
           const Text('🗂️', style: TextStyle(fontSize: 64)),
           const SizedBox(height: 16),
           Text(
-            'Nenhum cartão seu ainda',
+            S.emptyTitle,
             style: theme.textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
-            'Toque em "Novo cartão" para criar seus próprios flashcards. '
-            'Eles ficam salvos e aparecem na próxima vez que você abrir o app.',
+            S.emptyBody,
             style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
             textAlign: TextAlign.center,
           ),
@@ -160,7 +160,7 @@ class _CardTile extends StatelessWidget {
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4),
           child: Text(
-            '${card.level.label} · ${moduleLabel(card.moduleId)}',
+            '${card.level.label} · ${S.module(card.moduleId)}',
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.primary,
             ),
@@ -171,13 +171,13 @@ class _CardTile extends StatelessWidget {
           children: [
             IconButton(
               icon: const Icon(Icons.edit_outlined),
-              tooltip: 'Editar',
+              tooltip: S.editTooltip,
               onPressed: onEdit,
             ),
             IconButton(
               icon: const Icon(Icons.delete_outline),
               color: Colors.redAccent,
-              tooltip: 'Excluir',
+              tooltip: S.delete,
               onPressed: onDelete,
             ),
           ],
@@ -279,7 +279,7 @@ class _CardEditorState extends State<_CardEditor> {
               ),
             ),
             Text(
-              isEditing ? 'Editar cartão' : 'Novo cartão',
+              isEditing ? S.editCard : S.newCard,
               style: Theme.of(context)
                   .textTheme
                   .titleLarge
@@ -293,12 +293,12 @@ class _CardEditorState extends State<_CardEditor> {
                   children: [
                     DropdownButtonFormField<String>(
                       initialValue: _moduleId,
-                      decoration: const InputDecoration(labelText: 'Módulo'),
+                      decoration: InputDecoration(labelText: S.fieldModule),
                       items: [
                         for (final m in kModules)
                           DropdownMenuItem(
                             value: m.id,
-                            child: Text(m.label),
+                            child: Text(S.module(m.id)),
                           ),
                       ],
                       onChanged: (v) =>
@@ -307,12 +307,12 @@ class _CardEditorState extends State<_CardEditor> {
                     const SizedBox(height: 12),
                     DropdownButtonFormField<CefrLevel>(
                       initialValue: _level,
-                      decoration: const InputDecoration(labelText: 'Nível'),
+                      decoration: InputDecoration(labelText: S.fieldLevel),
                       items: [
                         for (final l in CefrLevel.values)
                           DropdownMenuItem(
                             value: l,
-                            child: Text(l.description),
+                            child: Text(S.levelDescription(l)),
                           ),
                       ],
                       onChanged: (v) =>
@@ -322,46 +322,46 @@ class _CardEditorState extends State<_CardEditor> {
                     TextFormField(
                       controller: _it,
                       textCapitalization: TextCapitalization.none,
-                      decoration: const InputDecoration(
-                        labelText: 'Italiano *',
-                        hintText: 'ex.: gatto',
+                      decoration: InputDecoration(
+                        labelText: S.fieldItalian,
+                        hintText: S.hintGatto,
                       ),
                       validator: (v) => (v == null || v.trim().isEmpty)
-                          ? 'Informe a palavra em italiano'
+                          ? S.validatorItalian
                           : null,
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _pt,
-                      decoration: const InputDecoration(
-                        labelText: 'Português *',
-                        hintText: 'ex.: gato',
+                      decoration: InputDecoration(
+                        labelText: S.fieldPortuguese,
+                        hintText: S.hintGato,
                       ),
                       validator: (v) => (v == null || v.trim().isEmpty)
-                          ? 'Informe a tradução em português'
+                          ? S.validatorPortuguese
                           : null,
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _ptAlt,
-                      decoration: const InputDecoration(
-                        labelText: 'Outras respostas em português (opcional)',
-                        hintText: 'separe por vírgula',
+                      decoration: InputDecoration(
+                        labelText: S.fieldPtAlt,
+                        hintText: S.commaSep,
                       ),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _itAlt,
-                      decoration: const InputDecoration(
-                        labelText: 'Outras respostas em italiano (opcional)',
-                        hintText: 'separe por vírgula',
+                      decoration: InputDecoration(
+                        labelText: S.fieldItAlt,
+                        hintText: S.commaSep,
                       ),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: _hint,
-                      decoration: const InputDecoration(
-                        labelText: 'Dica (opcional)',
+                      decoration: InputDecoration(
+                        labelText: S.fieldHint,
                       ),
                     ),
                   ],
@@ -372,7 +372,7 @@ class _CardEditorState extends State<_CardEditor> {
             FilledButton.icon(
               onPressed: _save,
               icon: const Icon(Icons.save_outlined),
-              label: Text(isEditing ? 'Salvar alterações' : 'Adicionar cartão'),
+              label: Text(isEditing ? S.saveChanges : S.addCard),
             ),
           ],
         ),

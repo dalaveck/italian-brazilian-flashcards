@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../data/modules.dart';
+import '../i18n/language_selector.dart';
+import '../i18n/strings.dart';
 import '../models/flashcard.dart';
 import '../services/score_store.dart';
 import '../state/card_repository.dart';
@@ -113,17 +115,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _start() async {
     if (_selected.isEmpty || _levels.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Selecione ao menos um módulo e um nível.'),
-        ),
+        SnackBar(content: Text(S.selectAtLeast)),
       );
       return;
     }
     if (_availableCards == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Nenhum cartão para essa combinação de módulos e níveis.'),
-        ),
+        SnackBar(content: Text(S.noCardsCombo)),
       );
       return;
     }
@@ -152,12 +150,17 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
               children: [
+                const Align(
+                  alignment: Alignment.centerRight,
+                  child: LanguageSelector(),
+                ),
+                const SizedBox(height: 8),
                 const _Header(),
                 const SizedBox(height: 16),
                 _StatsBar(bestScore: _bestScore, sessions: _totalSessions),
                 const SizedBox(height: 24),
 
-                const _SectionTitle('Sentido da tradução'),
+                _SectionTitle(S.sectionDirection),
                 const SizedBox(height: 8),
                 _DirectionSelector(
                   value: _direction,
@@ -165,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                const _SectionTitle('Nível (A1–C1)'),
+                _SectionTitle(S.sectionLevel),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
@@ -175,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         selected: _levels.contains(level),
                         onSelected: (_) => _toggleLevel(level),
                         label: Text(level.label),
-                        tooltip: level.description,
+                        tooltip: S.levelDescription(level),
                       ),
                   ],
                 ),
@@ -184,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const _SectionTitle('Módulos / áreas'),
+                    _SectionTitle(S.sectionModules),
                     TextButton.icon(
                       onPressed: _toggleAll,
                       icon: Icon(
@@ -193,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             : Icons.check_box_outline_blank,
                         size: 20,
                       ),
-                      label: Text(_allSelected ? 'Limpar' : 'Todos'),
+                      label: Text(_allSelected ? S.clear : S.all),
                     ),
                   ],
                 ),
@@ -220,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 16),
                 ],
                 Text(
-                  '$_availableCards cartões disponíveis na seleção',
+                  S.availableCards(_availableCards),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: Colors.white60,
                   ),
@@ -229,14 +232,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 OutlinedButton.icon(
                   onPressed: _openCustomCards,
                   icon: const Icon(Icons.library_add_outlined),
-                  label: const Text('Criar / gerenciar meus cartões'),
+                  label: Text(S.manageCards),
                 ),
                 const SizedBox(height: 24),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const _SectionTitle('Número de perguntas'),
+                    _SectionTitle(S.sectionCount),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 4),
@@ -245,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        _allQuestions ? 'Todas' : '$_count',
+                        _allQuestions ? S.allFeminine : '$_count',
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.bold,
@@ -283,10 +286,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   contentPadding: EdgeInsets.zero,
                   value: _allQuestions,
                   onChanged: (v) => setState(() => _allQuestions = v),
-                  title: const Text('Todas as perguntas'),
-                  subtitle: const Text(
-                    'Usa todos os cartões da seleção (ignora a barra)',
-                  ),
+                  title: Text(S.allQuestions),
+                  subtitle: Text(S.allQuestionsSub),
                 ),
                 const SizedBox(height: 8),
 
@@ -294,23 +295,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   contentPadding: EdgeInsets.zero,
                   value: _timer,
                   onChanged: (v) => setState(() => _timer = v),
-                  title: const Text('Cronometrar a sessão'),
-                  subtitle: const Text(
-                    'Mostra o tempo e dá bônus de velocidade',
-                  ),
+                  title: Text(S.timerTitle),
+                  subtitle: Text(S.timerSub),
                 ),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   value: _shuffle,
                   onChanged: (v) => setState(() => _shuffle = v),
-                  title: const Text('Embaralhar perguntas'),
+                  title: Text(S.shuffleTitle),
                 ),
                 const SizedBox(height: 24),
 
                 FilledButton.icon(
                   onPressed: _start,
                   icon: const Icon(Icons.play_arrow_rounded),
-                  label: const Text('Iniciar sessão'),
+                  label: Text(S.start),
                 ),
               ],
             ),
@@ -348,7 +347,7 @@ class _Header extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'Digite a resposta, ganhe pontos e marque seu tempo.',
+          S.appSubtitle,
           style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70),
         ),
       ],
@@ -370,9 +369,9 @@ class _StatsBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _stat(context, '🏆 Recorde', '$bestScore pts'),
+            _stat(context, S.statRecord, '$bestScore ${S.pts}'),
             Container(width: 1, height: 32, color: Colors.white12),
-            _stat(context, '📚 Sessões', '$sessions'),
+            _stat(context, S.statSessions, '$sessions'),
           ],
         ),
       ),
@@ -420,10 +419,10 @@ class _DirectionSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SegmentedButton<Direction>(
-      segments: const [
-        ButtonSegment(value: Direction.itToPt, label: Text('IT → PT')),
-        ButtonSegment(value: Direction.ptToIt, label: Text('PT → IT')),
-        ButtonSegment(value: Direction.mixed, label: Text('Misto')),
+      segments: [
+        const ButtonSegment(value: Direction.itToPt, label: Text('IT → PT')),
+        const ButtonSegment(value: Direction.ptToIt, label: Text('PT → IT')),
+        ButtonSegment(value: Direction.mixed, label: Text(S.directionMixed)),
       ],
       selected: {value},
       showSelectedIcon: false,
@@ -471,7 +470,7 @@ class _GroupHeader extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                group.label,
+                S.group(group),
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -506,7 +505,7 @@ class _ModuleChip extends StatelessWidget {
         size: 18,
         color: selected ? Theme.of(context).colorScheme.primary : null,
       ),
-      label: Text(module.label),
+      label: Text(S.module(module.id)),
     );
   }
 }
