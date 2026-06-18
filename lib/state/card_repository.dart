@@ -47,10 +47,15 @@ class CardRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Todos os cartões (internos + do usuário) dos módulos selecionados.
-  List<Flashcard> cardsForModules(Set<String> moduleIds) {
+  /// Todos os cartões (internos + do usuário) que estão nos módulos e níveis
+  /// selecionados. Um conjunto de níveis vazio significa "todos os níveis".
+  List<Flashcard> cardsForSelection(
+    Set<String> moduleIds,
+    Set<CefrLevel> levels,
+  ) {
     return [...kAllCards, ..._custom]
         .where((c) => moduleIds.contains(c.moduleId))
+        .where((c) => levels.isEmpty || levels.contains(c.level))
         .toList();
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../data/modules.dart';
+import '../models/flashcard.dart';
 import '../state/quiz_config.dart';
 import '../state/quiz_session.dart';
 import 'results_screen.dart';
@@ -209,8 +210,9 @@ class _QuizScreenState extends State<QuizScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'Traduza do ${question.promptLang} '
-                        '• ${moduleLabel(question.card.moduleId)}',
+                        'Traduza do ${question.promptLang} • '
+                        '${question.card.level.label} · '
+                        '${moduleLabel(question.card.moduleId)}',
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: theme.colorScheme.primary,
                         ),

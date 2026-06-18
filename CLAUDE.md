@@ -30,7 +30,20 @@ lib/
   models/flashcard.dart      # Flashcard, Question, Direction
   data/
     modules.dart             # metadados dos módulos (id, label, ícone)
-    decks.dart               # TODO o vocabulário (kAllCards)
+    decks.dart               # núcleo A1 (kCardsA1) + agrega kAllCards
+    cards_a2.dart            # vocabulário A2
+    cards_b1.dart            # vocabulário B1
+    cards_b2.dart            # vocabulário B2
+    cards_c1.dart            # vocabulário C1 (inclui expressões idiomáticas)
+    cards_conjugacoes.dart   # GERADO: 1100+ conjugações (6 pessoas) — não editar
+    cards_essenciais.dart    # GERADO: 1000+ palavras essenciais — não editar
+    cards_tempos.dart        # GERADO: passato/imperfetto/futuro/imperativo — não editar
+    cards_tempos2.dart       # GERADO: passato remoto, trapassato, condizionale, congiuntivo...
+tools/
+  gen_conjugations.py        # gera cards_conjugacoes.dart (rode e substitua)
+  gen_essentials.py          # gera cards_essenciais.dart (rode e substitua)
+  gen_tenses.py              # gera cards_tempos.dart (rode e substitua)
+  gen_tenses2.py             # gera cards_tempos2.dart (importa V de gen_tenses)
   services/
     answer_checker.dart      # normalização e comparação de respostas
     score_store.dart         # persistência de recordes (shared_preferences)
@@ -63,11 +76,39 @@ vercel-build.sh              # baixa o Flutter SDK e roda `flutter build web`
 - A comparação de respostas (`AnswerChecker`) é tolerante: ignora
   maiúsculas/minúsculas, acentuação, pontuação e artigo inicial. Ao mexer nisso,
   mantenha os testes em `test/answer_checker_test.dart` passando.
-- **Para adicionar vocabulário interno:** edite só `lib/data/decks.dart`. Cada
-  cartão é um `Flashcard(moduleId, it, pt, itAlt?, ptAlt?, hint?)`. Use
-  `itAlt`/`ptAlt` para sinônimos/variantes aceitas. Para um módulo novo,
-  adicione a entrada em `lib/data/modules.dart` (id + label + ícone) e cartões
-  com esse `moduleId`.
+- **Para adicionar vocabulário interno:** edite o arquivo do nível
+  correspondente (`decks.dart` para A1, `cards_a2/b1/b2/c1.dart` para os demais).
+  Cada cartão é um `Flashcard(moduleId, it, pt, level, itAlt?, ptAlt?, hint?)`.
+  O `level` (enum `CefrLevel`) tem padrão `a1`; nos arquivos A2–C1 ele é sempre
+  informado explicitamente. Use `itAlt`/`ptAlt` para sinônimos/variantes
+  aceitas. Para um módulo novo, adicione a entrada em `lib/data/modules.dart`
+  (id + label + ícone) e cartões com esse `moduleId`. Todos os arquivos de nível
+  são reunidos em `kAllCards` (em `decks.dart`).
+- **Cartões de conjugação:** ficam em `cards_conjugacoes.dart`, que é **gerado**
+  por `tools/gen_conjugations.py` (verbos regulares IT/PT, 6 pessoas × presente/
+  imperfeito/futuro). Para alterar, edite a lista `VERBS` no script, rode
+  `python3 tools/gen_conjugations.py` e comite o arquivo regerado — não edite o
+  `.dart` à mão.
+- **Vocabulário essencial:** o módulo `essenciais` (em `cards_essenciais.dart`)
+  é **gerado** por `tools/gen_essentials.py`, que traz adjetivos e substantivos
+  com singular e plural (formas fornecidas explicitamente nas tabelas, inclusive
+  plurais irregulares IT/PT). Para alterar, edite as tabelas no script, rode
+  `python3 tools/gen_essentials.py` e comite o `.dart` regerado.
+- **Tempos verbais (passato prossimo, imperfetto, futuro semplice,
+  imperativo):** gerados por `tools/gen_tenses.py` em `cards_tempos.dart`
+  (módulos `verbos_passato/imperfetto/futuro/imperativo`). Só verbos regulares;
+  particípios irregulares do italiano são dados explícitos na lista `V` e a
+  ortografia do PT (-car/-gar/-çar) é tratada por regra. Para alterar, edite `V`,
+  rode `python3 tools/gen_tenses.py` e comite o `.dart`.
+- **Demais tempos/modos (passato remoto, trapassato prossimo, futuro anteriore,
+  condizionale presente/passato, congiuntivo presente/imperfetto/passato/
+  trapassato):** gerados por `tools/gen_tenses2.py`, que **reaproveita a lista
+  `V` de `gen_tenses.py`** e os particípios; os tempos compostos usam `avere` +
+  particípio, com particípios irregulares do PT (`escrito`, `aberto`, `gasto`,
+  `aceito`) tratados por dicionário. Saída em `cards_tempos2.dart`.
+- **Seleção do usuário:** `QuizConfig` carrega `moduleIds` + `levels`;
+  `CardRepository.cardsForSelection(moduleIds, levels)` filtra por ambos
+  (conjunto de níveis vazio = todos os níveis).
 - **Cartões do usuário:** criados em `custom_cards_screen.dart`, persistidos por
   `custom_card_store.dart` e expostos via `CardRepository.instance` (carregado no
   `main()` antes do `runApp`). `QuizSession` monta as perguntas a partir de

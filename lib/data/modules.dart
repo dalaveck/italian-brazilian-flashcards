@@ -76,6 +76,171 @@ const List<StudyModule> kModules = [
     icon: Icons.calendar_today_outlined,
   ),
   StudyModule(
+    id: 'corpo',
+    label: 'Corpo humano',
+    icon: Icons.accessibility_new,
+  ),
+  StudyModule(
+    id: 'casa',
+    label: 'Casa e móveis',
+    icon: Icons.chair_outlined,
+  ),
+  StudyModule(
+    id: 'roupas',
+    label: 'Roupas',
+    icon: Icons.checkroom,
+  ),
+  StudyModule(
+    id: 'animais',
+    label: 'Animais',
+    icon: Icons.pets,
+  ),
+  StudyModule(
+    id: 'lugares',
+    label: 'Cidade e lugares',
+    icon: Icons.location_city,
+  ),
+  StudyModule(
+    id: 'transporte',
+    label: 'Transporte e viagem',
+    icon: Icons.directions_bus_outlined,
+  ),
+  StudyModule(
+    id: 'compras',
+    label: 'Compras e dinheiro',
+    icon: Icons.shopping_cart_outlined,
+  ),
+  StudyModule(
+    id: 'profissoes',
+    label: 'Profissões e trabalho',
+    icon: Icons.work_outline,
+  ),
+  StudyModule(
+    id: 'educacao',
+    label: 'Educação e estudos',
+    icon: Icons.school_outlined,
+  ),
+  StudyModule(
+    id: 'natureza',
+    label: 'Natureza e clima',
+    icon: Icons.cloud_outlined,
+  ),
+  StudyModule(
+    id: 'saude',
+    label: 'Saúde e corpo',
+    icon: Icons.local_hospital_outlined,
+  ),
+  StudyModule(
+    id: 'tecnologia',
+    label: 'Tecnologia',
+    icon: Icons.devices_outlined,
+  ),
+  StudyModule(
+    id: 'emocoes',
+    label: 'Sentimentos e emoções',
+    icon: Icons.mood,
+  ),
+  StudyModule(
+    id: 'verbos_avancados',
+    label: 'Verbos avançados',
+    icon: Icons.flash_on,
+  ),
+  StudyModule(
+    id: 'verbos_conjugacao',
+    label: 'Conjugação (todas as pessoas)',
+    icon: Icons.table_rows_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_passato',
+    label: 'Passato prossimo',
+    icon: Icons.history,
+  ),
+  StudyModule(
+    id: 'verbos_imperfetto',
+    label: 'Imperfetto',
+    icon: Icons.history_toggle_off,
+  ),
+  StudyModule(
+    id: 'verbos_futuro',
+    label: 'Futuro semplice',
+    icon: Icons.update,
+  ),
+  StudyModule(
+    id: 'verbos_imperativo',
+    label: 'Imperativo',
+    icon: Icons.campaign_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_passato_remoto',
+    label: 'Passato remoto',
+    icon: Icons.auto_stories_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_trapassato',
+    label: 'Trapassato prossimo',
+    icon: Icons.fast_rewind,
+  ),
+  StudyModule(
+    id: 'verbos_futuro_anteriore',
+    label: 'Futuro anteriore',
+    icon: Icons.fast_forward,
+  ),
+  StudyModule(
+    id: 'verbos_condizionale',
+    label: 'Condizionale presente',
+    icon: Icons.help_center_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_condizionale_passato',
+    label: 'Condizionale passato',
+    icon: Icons.history_edu_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_cong_presente',
+    label: 'Congiuntivo presente',
+    icon: Icons.psychology_alt_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_cong_imperfetto',
+    label: 'Congiuntivo imperfetto',
+    icon: Icons.psychology_outlined,
+  ),
+  StudyModule(
+    id: 'verbos_cong_passato',
+    label: 'Congiuntivo passato',
+    icon: Icons.menu_book,
+  ),
+  StudyModule(
+    id: 'verbos_cong_trapassato',
+    label: 'Congiuntivo trapassato',
+    icon: Icons.import_contacts,
+  ),
+  StudyModule(
+    id: 'essenciais',
+    label: 'Vocabulário essencial',
+    icon: Icons.menu_book_outlined,
+  ),
+  StudyModule(
+    id: 'adverbios',
+    label: 'Advérbios',
+    icon: Icons.speed,
+  ),
+  StudyModule(
+    id: 'conjuncoes',
+    label: 'Conjunções e conectores',
+    icon: Icons.link,
+  ),
+  StudyModule(
+    id: 'abstratos',
+    label: 'Conceitos abstratos',
+    icon: Icons.psychology_outlined,
+  ),
+  StudyModule(
+    id: 'expressoes',
+    label: 'Expressões idiomáticas',
+    icon: Icons.format_quote,
+  ),
+  StudyModule(
     id: 'personalizados',
     label: 'Meus cartões',
     icon: Icons.star_outline,

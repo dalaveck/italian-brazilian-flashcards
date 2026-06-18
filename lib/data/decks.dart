@@ -1,11 +1,23 @@
 import '../models/flashcard.dart';
+import 'cards_a2.dart';
+import 'cards_b1.dart';
+import 'cards_b2.dart';
+import 'cards_c1.dart';
+import 'cards_conjugacoes.dart';
+import 'cards_essenciais.dart';
+import 'cards_tempos.dart';
+import 'cards_tempos2.dart';
 
-/// Banco completo de flashcards, organizado por módulo.
+/// Banco completo de flashcards, organizado por nível (A1–C1) e por módulo.
 ///
 /// As listas `itAlt`/`ptAlt` trazem variantes aceitas (sinônimos, com/sem
 /// artigo, grafias alternativas). A verificação de resposta também ignora
 /// acentuação e maiúsculas/minúsculas (ver `services/answer_checker.dart`).
-const List<Flashcard> kAllCards = [
+///
+/// Os cartões deste arquivo são o núcleo de nível **A1** (nível padrão do
+/// `Flashcard`). Os demais níveis ficam em `cards_a2/b1/b2/c1.dart` e são
+/// reunidos em [kAllCards].
+const List<Flashcard> kCardsA1 = [
   // ---------------------------------------------------------------------------
   // Verbos no presente (1ª pessoa do singular, "io ...")
   // ---------------------------------------------------------------------------
@@ -224,7 +236,31 @@ const List<Flashcard> kAllCards = [
   Flashcard(moduleId: 'tempo', it: 'ora', pt: 'hora', ptAlt: ['agora']),
 ];
 
-/// Retorna os cartões dos módulos selecionados.
+/// Todos os cartões internos do app (todos os níveis).
+const List<Flashcard> kAllCards = [
+  ...kCardsA1,
+  ...kCardsA2,
+  ...kCardsB1,
+  ...kCardsB2,
+  ...kCardsC1,
+  ...kCardsConjugacoes,
+  ...kCardsEssenciais,
+  ...kCardsPassato,
+  ...kCardsImperfetto,
+  ...kCardsFuturo,
+  ...kCardsImperativo,
+  ...kCardsPassatoRemoto,
+  ...kCardsTrapassato,
+  ...kCardsFuturoAnteriore,
+  ...kCardsCondizionale,
+  ...kCardsCondizionalePassato,
+  ...kCardsCongPresente,
+  ...kCardsCongImperfetto,
+  ...kCardsCongPassato,
+  ...kCardsCongTrapassato,
+];
+
+/// Retorna os cartões dos módulos selecionados (todos os níveis).
 List<Flashcard> cardsForModules(Set<String> moduleIds) {
   return kAllCards.where((c) => moduleIds.contains(c.moduleId)).toList();
 }

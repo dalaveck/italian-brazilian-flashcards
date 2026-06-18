@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final Set<String> _selected = {...kModules.map((m) => m.id)};
+  final Set<CefrLevel> _levels = {...CefrLevel.values};
   Direction _direction = Direction.itToPt;
   int _count = 15;
   bool _timer = true;
@@ -47,7 +48,17 @@ class _HomeScreenState extends State<HomeScreen> {
   bool get _allSelected => _selected.length == kModules.length;
 
   int get _availableCards =>
-      CardRepository.instance.cardsForModules(_selected).length;
+      CardRepository.instance.cardsForSelection(_selected, _levels).length;
+
+  void _toggleLevel(CefrLevel level) {
+    setState(() {
+      if (_levels.contains(level)) {
+        _levels.remove(level);
+      } else {
+        _levels.add(level);
+      }
+    });
+  }
 
   Future<void> _openCustomCards() async {
     await Navigator.of(context).push(
@@ -79,14 +90,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _start() async {
-    if (_selected.isEmpty) {
+    if (_selected.isEmpty || _levels.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecione ao menos um módulo.')),
+        const SnackBar(
+          content: Text('Selecione ao menos um módulo e um nível.'),
+        ),
+      );
+      return;
+    }
+    if (_availableCards == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Nenhum cartão para essa combinação de módulos e níveis.'),
+        ),
       );
       return;
     }
     final config = QuizConfig(
       moduleIds: {..._selected},
+      levels: {..._levels},
       direction: _direction,
       questionCount: _count,
       timerEnabled: _timer,
@@ -119,6 +141,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 _DirectionSelector(
                   value: _direction,
                   onChanged: (d) => setState(() => _direction = d),
+                ),
+                const SizedBox(height: 24),
+
+                const _SectionTitle('Nível (A1–C1)'),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    for (final level in CefrLevel.values)
+                      FilterChip(
+                        selected: _levels.contains(level),
+                        onSelected: (_) => _toggleLevel(level),
+                        label: Text(level.label),
+                        tooltip: level.description,
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 24),
 
