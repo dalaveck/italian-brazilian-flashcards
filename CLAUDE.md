@@ -35,6 +35,9 @@ lib/
     cards_b1.dart            # vocabulário B1
     cards_b2.dart            # vocabulário B2
     cards_c1.dart            # vocabulário C1 (inclui expressões idiomáticas)
+    cards_conjugacoes.dart   # GERADO: 1100+ conjugações (6 pessoas) — não editar
+tools/
+  gen_conjugations.py        # gera cards_conjugacoes.dart (rode e substitua)
   services/
     answer_checker.dart      # normalização e comparação de respostas
     score_store.dart         # persistência de recordes (shared_preferences)
@@ -75,6 +78,11 @@ vercel-build.sh              # baixa o Flutter SDK e roda `flutter build web`
   aceitas. Para um módulo novo, adicione a entrada em `lib/data/modules.dart`
   (id + label + ícone) e cartões com esse `moduleId`. Todos os arquivos de nível
   são reunidos em `kAllCards` (em `decks.dart`).
+- **Cartões de conjugação:** ficam em `cards_conjugacoes.dart`, que é **gerado**
+  por `tools/gen_conjugations.py` (verbos regulares IT/PT, 6 pessoas × presente/
+  imperfeito/futuro). Para alterar, edite a lista `VERBS` no script, rode
+  `python3 tools/gen_conjugations.py` e comite o arquivo regerado — não edite o
+  `.dart` à mão.
 - **Seleção do usuário:** `QuizConfig` carrega `moduleIds` + `levels`;
   `CardRepository.cardsForSelection(moduleIds, levels)` filtra por ambos
   (conjunto de níveis vazio = todos os níveis).

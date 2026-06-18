@@ -3,6 +3,7 @@ import 'cards_a2.dart';
 import 'cards_b1.dart';
 import 'cards_b2.dart';
 import 'cards_c1.dart';
+import 'cards_conjugacoes.dart';
 
 /// Banco completo de flashcards, organizado por nível (A1–C1) e por módulo.
 ///
@@ -239,6 +240,7 @@ const List<Flashcard> kAllCards = [
   ...kCardsB1,
   ...kCardsB2,
   ...kCardsC1,
+  ...kCardsConjugacoes,
 ];
 
 /// Retorna os cartões dos módulos selecionados (todos os níveis).

@@ -9,7 +9,9 @@ sessão.
 
 ## ✨ Recursos
 
-- **+600 cartões** organizados por **nível CEFR (A1 → C1)** e por tópico.
+- **+1750 cartões** organizados por **nível CEFR (A1 → C1)** e por tópico,
+  incluindo **+1100 de conjugação verbal** cobrindo as 6 pessoas (io, tu,
+  lui/lei, noi, voi, loro) no presente, imperfeito e futuro.
 - **Filtro por nível (A1–C1)** e por **módulo/área** — combine como quiser.
 - **Dois sentidos:** Italiano → Português, Português → Italiano ou **Misto**.
 - **Módulos** (ou todos): verbos (presente, infinitivo, avançados),

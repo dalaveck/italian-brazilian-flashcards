@@ -146,6 +146,11 @@ const List<StudyModule> kModules = [
     icon: Icons.flash_on,
   ),
   StudyModule(
+    id: 'verbos_conjugacao',
+    label: 'Conjugação (todas as pessoas)',
+    icon: Icons.table_rows_outlined,
+  ),
+  StudyModule(
     id: 'adverbios',
     label: 'Advérbios',
     icon: Icons.speed,
