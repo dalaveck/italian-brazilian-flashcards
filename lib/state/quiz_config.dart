@@ -4,6 +4,7 @@ import '../models/flashcard.dart';
 class QuizConfig {
   QuizConfig({
     required this.moduleIds,
+    required this.levels,
     required this.direction,
     required this.questionCount,
     required this.timerEnabled,
@@ -12,6 +13,9 @@ class QuizConfig {
 
   /// Módulos selecionados.
   final Set<String> moduleIds;
+
+  /// Níveis CEFR selecionados (A1–C1).
+  final Set<CefrLevel> levels;
 
   /// Sentido da tradução.
   final Direction direction;

@@ -1,9 +1,41 @@
+/// Nível de proficiência (CEFR/QECR) do cartão.
+enum CefrLevel { a1, a2, b1, b2, c1 }
+
+extension CefrLevelLabel on CefrLevel {
+  /// Rótulo curto em maiúsculas (ex.: `A1`).
+  String get label => name.toUpperCase();
+
+  /// Nome do nível em português.
+  String get description {
+    switch (this) {
+      case CefrLevel.a1:
+        return 'A1 · Iniciante';
+      case CefrLevel.a2:
+        return 'A2 · Básico';
+      case CefrLevel.b1:
+        return 'B1 · Intermediário';
+      case CefrLevel.b2:
+        return 'B2 · Intermediário avançado';
+      case CefrLevel.c1:
+        return 'C1 · Avançado';
+    }
+  }
+}
+
+CefrLevel cefrFromName(String? name) {
+  return CefrLevel.values.firstWhere(
+    (l) => l.name == name,
+    orElse: () => CefrLevel.a1,
+  );
+}
+
 /// Um cartão de estudo (flashcard) bilíngue italiano <-> português.
 class Flashcard {
   const Flashcard({
     required this.moduleId,
     required this.it,
     required this.pt,
+    this.level = CefrLevel.a1,
     this.itAlt = const [],
     this.ptAlt = const [],
     this.hint,
@@ -12,6 +44,9 @@ class Flashcard {
 
   /// Id do módulo a que o cartão pertence (ex.: `verbos_presente`).
   final String moduleId;
+
+  /// Nível CEFR (A1–C1).
+  final CefrLevel level;
 
   /// Forma em italiano.
   final String it;
@@ -38,6 +73,7 @@ class Flashcard {
   Map<String, dynamic> toJson() => {
         'id': id,
         'moduleId': moduleId,
+        'level': level.name,
         'it': it,
         'pt': pt,
         'itAlt': itAlt,
@@ -51,6 +87,7 @@ class Flashcard {
     return Flashcard(
       id: json['id'] as String?,
       moduleId: json['moduleId'] as String? ?? 'personalizados',
+      level: cefrFromName(json['level'] as String?),
       it: json['it'] as String? ?? '',
       pt: json['pt'] as String? ?? '',
       itAlt: asList(json['itAlt']),

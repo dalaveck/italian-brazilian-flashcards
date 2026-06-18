@@ -8,6 +8,7 @@ void main() {
     return QuizSession(
       QuizConfig(
         moduleIds: {'cores'},
+        levels: CefrLevel.values.toSet(),
         direction: dir,
         questionCount: count,
         timerEnabled: false,

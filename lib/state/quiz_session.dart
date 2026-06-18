@@ -62,7 +62,8 @@ class QuizSession extends ChangeNotifier {
   static const int kBasePoints = 100;
 
   void _build() {
-    final cards = CardRepository.instance.cardsForModules(config.moduleIds);
+    final cards = CardRepository.instance
+        .cardsForSelection(config.moduleIds, config.levels);
     final rng = Random();
     final pool = List<Flashcard>.from(cards);
     if (config.shuffle) {

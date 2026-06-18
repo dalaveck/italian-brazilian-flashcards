@@ -9,10 +9,14 @@ sessão.
 
 ## ✨ Recursos
 
+- **+600 cartões** organizados por **nível CEFR (A1 → C1)** e por tópico.
+- **Filtro por nível (A1–C1)** e por **módulo/área** — combine como quiser.
 - **Dois sentidos:** Italiano → Português, Português → Italiano ou **Misto**.
-- **Módulos selecionáveis** (ou todos): verbos no presente, verbos no
-  infinitivo, preposições, artigos, substantivos, adjetivos, números, cores,
-  família, comida e bebida, saudações/expressões, tempo e dias.
+- **Módulos** (ou todos): verbos (presente, infinitivo, avançados),
+  preposições, artigos, substantivos, adjetivos, números, cores, família,
+  comida, saudações, tempo, corpo, casa, roupas, animais, cidade/lugares,
+  transporte, compras, profissões, educação, natureza, saúde, tecnologia,
+  emoções, advérbios, conjunções, conceitos abstratos e expressões idiomáticas.
 - **Resposta digitada** com correção tolerante (ignora acentos, maiúsculas,
   pontuação e artigo inicial; aceita sinônimos).
 - **Cronômetro** opcional com bônus de velocidade.

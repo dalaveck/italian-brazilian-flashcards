@@ -160,7 +160,7 @@ class _CardTile extends StatelessWidget {
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4),
           child: Text(
-            moduleLabel(card.moduleId),
+            '${card.level.label} · ${moduleLabel(card.moduleId)}',
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.primary,
             ),
@@ -205,6 +205,7 @@ class _CardEditorState extends State<_CardEditor> {
   late final TextEditingController _ptAlt;
   late final TextEditingController _hint;
   late String _moduleId;
+  late CefrLevel _level;
 
   @override
   void initState() {
@@ -216,6 +217,7 @@ class _CardEditorState extends State<_CardEditor> {
     _ptAlt = TextEditingController(text: e?.ptAlt.join(', ') ?? '');
     _hint = TextEditingController(text: e?.hint ?? '');
     _moduleId = e?.moduleId ?? 'personalizados';
+    _level = e?.level ?? CefrLevel.a1;
   }
 
   @override
@@ -243,6 +245,7 @@ class _CardEditorState extends State<_CardEditor> {
       id: existing?.id ??
           DateTime.now().microsecondsSinceEpoch.toString(),
       moduleId: _moduleId,
+      level: _level,
       it: _it.text.trim(),
       pt: _pt.text.trim(),
       itAlt: _splitAlts(_itAlt.text),
@@ -300,6 +303,20 @@ class _CardEditorState extends State<_CardEditor> {
                       ],
                       onChanged: (v) =>
                           setState(() => _moduleId = v ?? 'personalizados'),
+                    ),
+                    const SizedBox(height: 12),
+                    DropdownButtonFormField<CefrLevel>(
+                      initialValue: _level,
+                      decoration: const InputDecoration(labelText: 'Nível'),
+                      items: [
+                        for (final l in CefrLevel.values)
+                          DropdownMenuItem(
+                            value: l,
+                            child: Text(l.description),
+                          ),
+                      ],
+                      onChanged: (v) =>
+                          setState(() => _level = v ?? CefrLevel.a1),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
