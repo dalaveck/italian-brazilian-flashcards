@@ -43,11 +43,13 @@ lib/
     cards_essenciais.dart    # GERADO: 1000+ palavras essenciais — não editar
     cards_tempos.dart        # GERADO: passato/imperfetto/futuro/imperativo — não editar
     cards_tempos2.dart       # GERADO: passato remoto, trapassato, condizionale, congiuntivo...
+    module_card_counts.dart  # GERADO: contagem de cartões por módulo/nível (home) — não editar
 tools/
   gen_conjugations.py        # gera cards_conjugacoes.dart (rode e substitua)
   gen_essentials.py          # gera cards_essenciais.dart (rode e substitua)
   gen_tenses.py              # gera cards_tempos.dart (rode e substitua)
   gen_tenses2.py             # gera cards_tempos2.dart (importa V de gen_tenses)
+  gen_module_counts.py       # gera module_card_counts.dart (rode após alterar QUALQUER cartão)
   services/
     answer_checker.dart      # normalização e comparação de respostas
     score_store.dart         # persistência de recordes (shared_preferences)
@@ -55,7 +57,7 @@ tools/
   state/
     quiz_config.dart         # configuração escolhida na home
     quiz_session.dart        # lógica/estado de uma sessão (pontuação, fluxo)
-    card_repository.dart     # combina kAllCards + cartões do usuário (singleton)
+    card_repository.dart     # combina decks leves + pesados (deferred) + do usuário (singleton)
   screens/
     home_screen.dart         # seleção de módulos/sentido/opções
     quiz_screen.dart         # tela de pergunta + cronômetro + digitação
@@ -117,13 +119,30 @@ vercel-build.sh              # baixa o Flutter SDK e roda `flutter build web`
   `V` de `gen_tenses.py`** e os particípios; os tempos compostos usam `avere` +
   particípio, com particípios irregulares do PT (`escrito`, `aberto`, `gasto`,
   `aceito`) tratados por dicionário. Saída em `cards_tempos2.dart`.
+- **Carregamento dos decks (performance):** os decks gerados grandes
+  (`cards_conjugacoes`, `cards_essenciais`, `cards_tempos`, `cards_tempos2`)
+  somam ~3 MB e **não** entram em `kAllCards` (que guarda só o núcleo leve
+  A1–C1). Em `card_repository.dart` eles são importados com `deferred as` e
+  carregados sob demanda por `CardRepository.ensureDecksLoaded()` (`loadLibrary()`
+  → chunks JS separados). Isso mantém o primeiro acesso à página leve; os chunks
+  só baixam ao iniciar uma sessão. **Importante:** não importe esses arquivos sem
+  `deferred` no código do app (apenas testes podem importá-los direto), senão o
+  code splitting é desfeito e tudo volta ao bundle inicial.
+- **Contagem na home:** a tela inicial mostra quantos cartões há na seleção via
+  `CardRepository.countForSelection(...)`, que usa o mapa estático
+  `kModuleCardCounts` (`module_card_counts.dart`, **gerado** por
+  `tools/gen_module_counts.py`) + os cartões do usuário — sem carregar os decks
+  pesados. Rode `python3 tools/gen_module_counts.py` após alterar QUALQUER
+  arquivo de cartões (inclusive os gerados) para manter a contagem em sincronia.
 - **Seleção do usuário:** `QuizConfig` carrega `moduleIds` + `levels`;
   `CardRepository.cardsForSelection(moduleIds, levels)` filtra por ambos
-  (conjunto de níveis vazio = todos os níveis).
+  (conjunto de níveis vazio = todos os níveis). Os decks pesados só aparecem aí
+  depois de `ensureDecksLoaded()` (o `QuizScreen` aguarda esse carregamento,
+  mostrando um indicador, antes de montar a `QuizSession`).
 - **Cartões do usuário:** criados em `custom_cards_screen.dart`, persistidos por
   `custom_card_store.dart` e expostos via `CardRepository.instance` (carregado no
   `main()` antes do `runApp`). `QuizSession` monta as perguntas a partir de
-  `CardRepository.instance.cardsForModules(...)`, que une internos + do usuário.
+  `CardRepository.instance.cardsForSelection(...)`, que une internos + do usuário.
   Cartões do usuário têm `Flashcard.id` (os internos têm `id == null`).
 
 ## Comandos

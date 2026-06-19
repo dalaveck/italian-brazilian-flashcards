@@ -329,26 +329,18 @@ const List<ModuleGroup> kModuleGroups = [
   ),
 ];
 
-StudyModule moduleById(String id) {
-  return kModules.firstWhere(
-    (m) => m.id == id,
-    orElse: () => const StudyModule(
-      id: '?',
-      label: 'Outro',
-      icon: Icons.help_outline,
-    ),
-  );
-}
+const StudyModule _kUnknownModule = StudyModule(
+  id: '?',
+  label: 'Outro',
+  icon: Icons.help_outline,
+);
 
-String moduleLabel(String id) {
-  return kModules
-      .firstWhere(
-        (m) => m.id == id,
-        orElse: () => const StudyModule(
-          id: '?',
-          label: 'Outro',
-          icon: Icons.help_outline,
-        ),
-      )
-      .label;
-}
+/// Índice id → módulo, montado uma vez, para buscas O(1) (a tela inicial
+/// resolve dezenas de rótulos a cada rebuild, inclusive ao trocar de idioma).
+final Map<String, StudyModule> _moduleById = {
+  for (final m in kModules) m.id: m,
+};
+
+StudyModule moduleById(String id) => _moduleById[id] ?? _kUnknownModule;
+
+String moduleLabel(String id) => moduleById(id).label;

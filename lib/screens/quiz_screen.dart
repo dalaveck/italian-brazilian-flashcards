@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../i18n/strings.dart';
 import '../models/flashcard.dart';
+import '../state/card_repository.dart';
 import '../state/quiz_config.dart';
 import '../state/quiz_session.dart';
 import 'results_screen.dart';
@@ -19,7 +20,9 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  late final QuizSession _session;
+  // Nulo enquanto os decks carregam (chunks `deferred`); a tela mostra um
+  // indicador de carregamento até a sessão ficar pronta.
+  QuizSession? _session;
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   Timer? _ticker;
@@ -28,7 +31,16 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
-    _session = QuizSession(widget.config);
+    _prepareSession();
+  }
+
+  /// Garante que os decks pesados estejam carregados e então monta a sessão.
+  Future<void> _prepareSession() async {
+    await CardRepository.instance.ensureDecksLoaded();
+    if (!mounted) return;
+    setState(() {
+      _session = QuizSession(widget.config);
+    });
     if (widget.config.timerEnabled) {
       _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
         if (mounted) setState(() {});
@@ -44,26 +56,30 @@ class _QuizScreenState extends State<QuizScreen> {
     _ticker?.cancel();
     _controller.dispose();
     _focusNode.dispose();
-    _session.abort();
-    _session.dispose();
+    _session?.abort();
+    _session?.dispose();
     super.dispose();
   }
 
   void _submit() {
-    if (_session.answered) {
+    final session = _session;
+    if (session == null) return;
+    if (session.answered) {
       _next();
       return;
     }
     if (_controller.text.trim().isEmpty) return;
-    _session.submit(_controller.text);
+    session.submit(_controller.text);
     setState(() => _showHint = false);
   }
 
   void _next() {
-    _session.next();
+    final session = _session;
+    if (session == null) return;
+    session.next();
     _controller.clear();
     setState(() => _showHint = false);
-    if (_session.finished) {
+    if (session.finished) {
       _goToResults();
     } else {
       _focusNode.requestFocus();
@@ -71,16 +87,19 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _skip() {
-    if (_session.answered) return;
-    _session.skip();
+    final session = _session;
+    if (session == null || session.answered) return;
+    session.skip();
     setState(() {});
   }
 
   void _goToResults() {
+    final session = _session;
+    if (session == null) return;
     _ticker?.cancel();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => ResultsScreen(session: _session, config: widget.config),
+        builder: (_) => ResultsScreen(session: session, config: widget.config),
       ),
     );
   }
@@ -108,6 +127,28 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final session = _session;
+    if (session == null) {
+      // Decks ainda carregando (chunk `deferred`): mostra um loading curto.
+      return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(S.preparingCards),
+            ],
+          ),
+        ),
+      );
+    }
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
@@ -127,9 +168,9 @@ class _QuizScreenState extends State<QuizScreen> {
             },
           ),
           title: AnimatedBuilder(
-            animation: _session,
+            animation: session,
             builder: (_, __) => Text(
-              '${_session.position} / ${_session.total}',
+              '${session.position} / ${session.total}',
             ),
           ),
           actions: [
@@ -141,7 +182,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     children: [
                       const Icon(Icons.timer_outlined, size: 18),
                       const SizedBox(width: 4),
-                      Text(_formatDuration(_session.elapsed)),
+                      Text(_formatDuration(session.elapsed)),
                     ],
                   ),
                 ),
@@ -153,8 +194,8 @@ class _QuizScreenState extends State<QuizScreen> {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 560),
               child: AnimatedBuilder(
-                animation: _session,
-                builder: (context, _) => _buildBody(context),
+                animation: session,
+                builder: (context, _) => _buildBody(context, session),
               ),
             ),
           ),
@@ -163,13 +204,13 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context, QuizSession session) {
     final theme = Theme.of(context);
-    final question = _session.current;
+    final question = session.current;
     if (question == null) {
       return const Center(child: CircularProgressIndicator());
     }
-    final outcome = _session.lastOutcome;
+    final outcome = session.lastOutcome;
 
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -182,16 +223,16 @@ class _QuizScreenState extends State<QuizScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: LinearProgressIndicator(
-                    value: _session.total == 0
+                    value: session.total == 0
                         ? 0
-                        : _session.position / _session.total,
+                        : session.position / session.total,
                     minHeight: 8,
                     backgroundColor: Colors.white12,
                   ),
                 ),
               ),
               const SizedBox(width: 12),
-              _ScorePill(score: _session.score, streak: _session.streak),
+              _ScorePill(score: session.score, streak: session.streak),
             ],
           ),
           const SizedBox(height: 24),
@@ -306,7 +347,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   child: Text(
                     outcome == null
                         ? S.answer
-                        : (_session.position == _session.total
+                        : (session.position == session.total
                             ? S.seeResult
                             : S.next),
                   ),

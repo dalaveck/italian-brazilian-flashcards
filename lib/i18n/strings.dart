@@ -74,6 +74,10 @@ class S {
         'Nenhum cartão para essa combinação de módulos e níveis.',
         'Nessuna carta per questa combinazione di moduli e livelli.',
       );
+  static String get preparingCards => _t(
+        'Preparando os cartões…',
+        'Preparazione delle carte…',
+      );
 
   static String get directionMixed => _t('Misto', 'Misto');
 

@@ -32,13 +32,26 @@ class _HomeScreenState extends State<HomeScreen> {
   int _bestScore = 0;
   int _totalSessions = 0;
 
+  // Total de cartões na seleção atual. Mantido em cache e recalculado só quando
+  // muda a seleção de módulos/níveis — assim a troca de idioma (que reconstrói
+  // toda a árvore) não dispara recontagem.
+  int _availableCards = 0;
+
   static const double _minCount = 5;
   static const double _maxCount = 150;
 
   @override
   void initState() {
     super.initState();
+    _updateAvailable();
     _loadStats();
+  }
+
+  /// Recalcula a contagem de cartões disponíveis (barato: usa a contagem
+  /// estática pré-gerada, sem carregar os decks pesados).
+  void _updateAvailable() {
+    _availableCards =
+        CardRepository.instance.countForSelection(_selected, _levels);
   }
 
   Future<void> _loadStats() async {
@@ -53,9 +66,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool get _allSelected => _selected.length == kModules.length;
 
-  int get _availableCards =>
-      CardRepository.instance.cardsForSelection(_selected, _levels).length;
-
   void _toggleLevel(CefrLevel level) {
     setState(() {
       if (_levels.contains(level)) {
@@ -63,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         _levels.add(level);
       }
+      _updateAvailable();
     });
   }
 
@@ -70,7 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
     await Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => const CustomCardsScreen()),
     );
-    if (mounted) setState(() {}); // atualiza a contagem de cartões disponíveis
+    // Atualiza a contagem (o usuário pode ter criado/excluído cartões).
+    if (mounted) setState(_updateAvailable);
   }
 
   void _toggleAll() {
@@ -82,6 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ..clear()
           ..addAll(kModules.map((m) => m.id));
       }
+      _updateAvailable();
     });
   }
 
@@ -101,6 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         _selected.addAll(group.moduleIds);
       }
+      _updateAvailable();
     });
   }
 
@@ -111,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         _selected.add(id);
       }
+      _updateAvailable();
     });
   }
 

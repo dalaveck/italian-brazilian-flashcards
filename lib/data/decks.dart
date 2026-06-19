@@ -3,10 +3,6 @@ import 'cards_a2.dart';
 import 'cards_b1.dart';
 import 'cards_b2.dart';
 import 'cards_c1.dart';
-import 'cards_conjugacoes.dart';
-import 'cards_essenciais.dart';
-import 'cards_tempos.dart';
-import 'cards_tempos2.dart';
 
 /// Banco completo de flashcards, organizado por nível (A1–C1) e por módulo.
 ///
@@ -236,31 +232,15 @@ const List<Flashcard> kCardsA1 = [
   Flashcard(moduleId: 'tempo', it: 'ora', pt: 'hora', ptAlt: ['agora']),
 ];
 
-/// Todos os cartões internos do app (todos os níveis).
+/// Cartões internos "leves" (núcleo A1–C1), carregados de imediato no bundle
+/// inicial. Os decks GERADOS e grandes (conjugações, essenciais e tempos
+/// verbais) NÃO entram aqui: ficam atrás de imports `deferred` em
+/// `state/card_repository.dart` e só são baixados ao iniciar uma sessão, para
+/// manter o primeiro carregamento da página leve.
 const List<Flashcard> kAllCards = [
   ...kCardsA1,
   ...kCardsA2,
   ...kCardsB1,
   ...kCardsB2,
   ...kCardsC1,
-  ...kCardsConjugacoes,
-  ...kCardsEssenciais,
-  ...kCardsPassato,
-  ...kCardsImperfetto,
-  ...kCardsFuturo,
-  ...kCardsImperativo,
-  ...kCardsPassatoRemoto,
-  ...kCardsTrapassato,
-  ...kCardsFuturoAnteriore,
-  ...kCardsCondizionale,
-  ...kCardsCondizionalePassato,
-  ...kCardsCongPresente,
-  ...kCardsCongImperfetto,
-  ...kCardsCongPassato,
-  ...kCardsCongTrapassato,
 ];
-
-/// Retorna os cartões dos módulos selecionados (todos os níveis).
-List<Flashcard> cardsForModules(Set<String> moduleIds) {
-  return kAllCards.where((c) => moduleIds.contains(c.moduleId)).toList();
-}
